@@ -9,19 +9,59 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
             color: #333;
         }
         .container {
             max-width: 900px;
             margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
         }
-        h1, h2, h3 {
+        header, .section, footer {
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2em;
+            color: #333;
+        }
+        p.intro {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 10px;
+        }
+        h2 {
             color: #0056b3;
+            font-size: 1.6em;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 1.3em;
+            color: #333;
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            color: #555;
+        }
+        ul li {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            position: relative;
+        }
+        ul li:before {
+            content: '•';
+            color: #0056b3;
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+            line-height: 1;
         }
         a {
             color: #007bff;
@@ -30,26 +70,21 @@
         a:hover {
             text-decoration: underline;
         }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
         .project {
             margin-bottom: 20px;
-            border-left: 3px solid #0056b3;
-            padding-left: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f7f9fc;
+            border-left: 4px solid #0056b3;
         }
         footer {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 10px;
             font-size: 0.9em;
+            color: #666;
+        }
+        footer a {
+            color: #333;
         }
     </style>
 </head>
@@ -57,7 +92,7 @@
     <div class="container">
         <header>
             <h1>Amith Baradwaj KH - Developer Portfolio</h1>
-            <p>👋 Hi, I'm Amith Baradwaj KH, a dedicated software developer with expertise in .NET Core, ASP.NET, and Node.js, bringing innovative and scalable solutions for over 4 years. I specialize in AWS and Azure cloud integrations, DevOps, and creating robust, secure web applications.</p>
+            <p class="intro">👋 Hi, I'm Amith Baradwaj KH, a dedicated software developer specializing in .NET Core, ASP.NET, and Node.js, bringing innovative and scalable solutions for over 4 years.</p>
         </header>
 
         <section class="section">
@@ -66,8 +101,8 @@
                 <li><strong>Languages:</strong> C#, JavaScript, TypeScript</li>
                 <li><strong>Frameworks:</strong> ASP.NET Core, MVC, Node.js, Express</li>
                 <li><strong>Databases:</strong> MySQL, MongoDB, Redis, AWS RDS, Aurora, DocumentDB</li>
-                <li><strong>Cloud Platforms:</strong> AWS (EC2, ECS, Fargate, Amplify), Azure (GPT, Cognitive Search)</li>
-                <li><strong>DevOps Tools:</strong> Docker, Kubernetes (Minikube), GitHub Actions, GitLab CI/CD, Ansible</li>
+                <li><strong>Cloud Platforms:</strong> AWS, Azure</li>
+                <li><strong>DevOps Tools:</strong> Docker, Kubernetes, GitHub Actions, GitLab CI/CD, Ansible</li>
                 <li><strong>Version Control:</strong> Git, GitHub, GitLab</li>
                 <li><strong>DNS Management:</strong> GoDaddy, Hostgator, AWS Route53</li>
             </ul>
@@ -76,35 +111,22 @@
         <section class="section">
             <h2>🛠 Key Projects</h2>
             <div class="project">
-                <h3>1. AIRI - Airui Intelligent Technology (Shenzhen) Co., Ltd</h3>
-                <p><strong>Technologies:</strong> Node.js, Express, MySQL - InnoDB, DocumentDB,AWS, Private VMs, ComfyUI, Stable Diffusion WebUI</p>
-                <p><strong>Description:</strong> Developed AIRI, an AI-powered application for generating diverse architectural styles. Integrated AWS services and implemented CI/CD with GitHub Actions and GitLab, achieving scalable, efficient image processing.</p>
-                <p><strong>Deployment:</strong> AWS EC2, RDS, DocumentDB with Nginx load balancing</p>
-                <p>Product URL:- <a href="https://airilab.com"></a>/</p>
+                <h3>AIRI - Airui Intelligent Technology</h3>
+                <p><strong>Technologies:</strong> Node.js, Express, AWS, ComfyUI</p>
+                <p>Developed AIRI, an AI-powered app for generating architectural styles with efficient image processing.</p>
+                <p>Product URL: <a href="https://airilab.com">airilab.com</a></p>
             </div>
             <div class="project">
-                <h3>2. Healthetile - Health eTile LLC</h3>
-                <p><strong>Technologies:</strong> ASP.NET Core, MySQL, AWS</p>
-                 <p><strong>Description:</strong> Developed a data acquisition system with ASP.NET Core, handling data at high frequencies with scheduling and supervised learning models for health monitoring.</p>
-                <p><strong>Description:</strong> Designed a secure healthcare platform, leveraging AWS ECS, Amplify, and Aurora. Integrated machine learning models with ML.NET for anomaly detection in patient vitals.</p>
-                <p><strong>Deployment:</strong> AWS ECS, ECR, Amplify with GitHub Actions</p>
-                <p>URL:- <a href="https://healthetile.io/"></a></p>
-                <p>Product URL:- <a href="https://portal.healthetile.net/"></a></p>
+                <h3>Healthetile - Health eTile LLC</h3>
+                <p><strong>Technologies:</strong> ASP.NET Core, AWS</p>
+                <p>Built a secure healthcare platform with ML models for anomaly detection in patient vitals.</p>
+                <p>Product URL: <a href="https://healthetile.io/">healthetile.io</a></p>
             </div>
             <div class="project">
-                <h3>3. DHA (Dubai health authority) and CCP - DataFlow Groups</h3>
-                <p><strong>Technologies:</strong> Dotnet MVC, ORACLE, MSSQL, Gitlab, Jenkins and SONARQUBE</p>
-                <p><strong>Description:</strong> Built and optimized APIs for the Dubai Health Authority, including agent logins, secure form submissions, and integrating MiGS payment gateway.</p>
-                <p><strong>Deployment:</strong> Dockerized services on local server with secure API endpoints</p>
-                 <p>URL:- <a href="https://www.dataflowgroup.com/"></a></p>
-                 <p>Product URL:- <a href="https://dha.dfgateway.com/"></a></p>
-            </div>
-            <div class="project">
-                <h3>4. Saina Health - Saina Health</h3>
-                <p><strong>Technologies:</strong> ASP.NET Core, MySQL - InnoDB, Redis</p>
-                <p><strong>Description:</strong> Developed a data acquisition system with ASP.NET Core, handling data at high frequencies with scheduling and supervised learning models for health monitoring.</p>
-                <p><strong>Deployment:</strong> Self-hosted on IIS with automated CI/CD via GitHub Actions</p>
-                <p>URL:- <a href="https://www.sainahealth.com/"></a></p>
+                <h3>DHA & CCP - DataFlow Groups</h3>
+                <p><strong>Technologies:</strong> .NET MVC, Oracle, MSSQL, GitLab</p>
+                <p>Built secure APIs for Dubai Health Authority, including MiGS payment gateway integration.</p>
+                <p>Product URL: <a href="https://dha.dfgateway.com/">dha.dfgateway.com</a></p>
             </div>
         </section>
 
@@ -112,27 +134,25 @@
             <h2>📚 Professional Experience</h2>
             <p><strong>Software Developer, Promena | Oct 2020 - Present</strong></p>
             <ul>
-                <li>Lead backend development and cloud deployment, ensuring high-performance solutions across ASP.NET and Node.js applications.</li>
-                <li>Streamlined deployment processes with CI/CD, reducing downtime to zero and improving deployment efficiency by 75%.</li>
-                <li>Oversaw cloud infrastructure on AWS, managing EC2, ECS, and Amplify deployments, and handled DNS setup and management.</li>
-                <li>URL:- <a href="https://www.promena.in/"></a></li>
+                <li>Led backend development across ASP.NET and Node.js applications.</li>
+                <li>Improved deployment efficiency by 75% using CI/CD.</li>
+                <li>Managed AWS infrastructure and DNS setup.</li>
             </ul>
         </section>
 
         <section class="section">
             <h2>🌟 Achievements</h2>
             <ul>
-                <li>Deployed multiple high-availability applications with zero downtime, enhancing client satisfaction and user experience.</li>
-                <li>Optimized deployment times, reducing the process by 75% through effective use of CI/CD pipelines.</li>
-                <li>Improved data security and compliance, ensuring HIPAA compliance across healthcare projects.</li>
-                <li>Contributed to open-source projects, fostering innovation and collaboration in the developer community.</li>
+                <li>Deployed high-availability applications with zero downtime.</li>
+                <li>Enhanced data security and compliance for healthcare projects.</li>
+                <li>Contributed to open-source projects in the developer community.</li>
             </ul>
         </section>
 
         <footer>
             <p>📧 Contact: <a href="mailto:amithbharadwaj08@gmail.com">amithbharadwaj08@gmail.com</a> | 📱 Phone: +91 7892954711</p>
-            <p>💼 LinkedIn: <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101">linkedin.com/in/amith-baradwaj-kh-8487ba101</a></p>
-             <p>💼 Own Website: <a href="https://amithbharadwaj08.wordpress.com/"></a></p>
+            <p>💼 LinkedIn: <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101">linkedin.com/in/amith-baradwaj-kh</a></p>
+            <p>🌐 Website: <a href="https://amithbharadwaj08.wordpress.com/">amithbharadwaj08.wordpress.com</a></p>
         </footer>
     </div>
 </body>
