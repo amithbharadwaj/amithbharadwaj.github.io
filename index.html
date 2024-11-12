@@ -5,24 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amith Baradwaj KH's Professional Portfolio</title>
     <style>
+        /* Main Styles */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             background-color: #f0f2f5;
             color: #333;
+            overflow-x: hidden;
         }
         .container {
             max-width: 900px;
-            margin: auto;
+            margin: 40px auto;
             background: #ffffff;
             padding: 20px 40px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Header and Sections */
+        header h1, h2, h3 {
+            animation: slideInLeft 0.7s ease-in-out;
         }
         header, .section, footer {
             margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+            transform: translateY(20px);
         }
         header h1 {
             font-size: 2em;
@@ -40,11 +50,8 @@
             padding-bottom: 5px;
             margin-bottom: 20px;
         }
-        h3 {
-            font-size: 1.3em;
-            color: #333;
-            margin-top: 10px;
-        }
+        
+        /* Lists */
         ul {
             list-style: none;
             padding: 0;
@@ -63,29 +70,51 @@
             font-size: 1.2em;
             line-height: 1;
         }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+        
+        /* Projects Styling */
         .project {
             margin-bottom: 20px;
             padding: 15px;
             border-radius: 8px;
             background-color: #f7f9fc;
             border-left: 4px solid #0056b3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 1s ease-in-out;
         }
+        .project:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        /* Footer */
         footer {
             text-align: center;
             padding: 10px;
             font-size: 0.9em;
             color: #666;
         }
-        footer a {
-            color: #333;
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
     </style>
 </head>
 <body>
@@ -163,4 +192,4 @@
         </footer>
     </div>
 </body>
-</html>
+</html
