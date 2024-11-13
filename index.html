@@ -3,89 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amith Baradwaj KH's Professional Portfolio</title>
+    <title>Amith Baradwaj KH - Software Developer Portfolio</title>
     <style>
-        /* Main Styles */
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: #f0f2f5;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fb;
             color: #333;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
         .container {
+            width: 80%;
             max-width: 900px;
             margin: 40px auto;
-            background: #ffffff;
-            padding: 20px 40px;
+            padding: 30px;
+            background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            animation: fadeInUp 0.6s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        /* Header and Sections */
-        header h1, h2, h3 {
-            animation: slideInLeft 0.7s ease-in-out;
-        }
-        header, .section, footer {
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeInUp 1s forwards;
-            transform: translateY(20px);
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
         }
         header h1 {
-            font-size: 2em;
-            color: #333;
-        }
-        p.intro {
-            font-size: 1.2em;
-            color: #555;
-            margin-top: 10px;
-        }
-        h2 {
+            font-size: 2.5em;
             color: #0056b3;
-            font-size: 1.6em;
+            margin-bottom: 10px;
+        }
+        .intro {
+            font-size: 1.1em;
+            color: #555;
+            font-weight: 300;
+        }
+
+        /* Section Titles */
+        h2 {
+            font-size: 1.7em;
+            color: #0056b3;
             border-bottom: 2px solid #0056b3;
             padding-bottom: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-        
-        /* Lists */
+
+        /* List and Bullet points */
         ul {
-            list-style: none;
-            padding: 0;
-            color: #555;
+            list-style-type: none;
+            padding-left: 0;
         }
         ul li {
             margin-bottom: 10px;
-            padding-left: 10px;
-            position: relative;
+            color: #555;
         }
-        ul li:before {
-            content: '•';
-            color: #0056b3;
-            position: absolute;
-            left: 0;
-            font-size: 1.2em;
-            line-height: 1;
-        }
-        
-        /* Projects Styling */
+
+        /* Projects Section */
         .project {
-            margin-bottom: 20px;
+            background-color: #f9f9fc;
+            border-left: 4px solid #0056b3;
             padding: 15px;
             border-radius: 8px;
-            background-color: #f7f9fc;
-            border-left: 4px solid #0056b3;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeIn 1s ease-in-out;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
         .project:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             transform: scale(1.02);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         }
-        
+        .project h3 {
+            color: #333;
+            font-size: 1.3em;
+        }
+        .project p {
+            font-size: 1em;
+            color: #666;
+        }
+
         /* Links */
         a {
             color: #007bff;
@@ -96,35 +94,54 @@
             color: #0056b3;
             text-decoration: underline;
         }
-        
+
         /* Footer */
         footer {
             text-align: center;
-            padding: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
             font-size: 0.9em;
-            color: #666;
+            color: #777;
+            border-top: 2px solid #eee;
         }
-        
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: #0056b3;
+        }
+
         /* Animations */
         @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
+
+        /* Responsiveness */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
         }
-        
+
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Amith Baradwaj KH - Developer Portfolio</h1>
+            <h1>Amith Baradwaj KH - Software Developer Portfolio</h1>
             <p class="intro">👋 Hi, I'm Amith Baradwaj KH, a passionate software developer specializing in scalable web applications, cloud integrations, and DevOps. With over 4 years of experience in .NET Core, ASP.NET, and Node.js, I’m focused on delivering high-quality, efficient solutions.</p>
         </header>
 
-        <section class="section">
+        <section>
             <h2>🚀 Technologies & Skills</h2>
             <ul>
                 <li><strong>Languages:</strong> C#, JavaScript, TypeScript</li>
@@ -137,35 +154,35 @@
             </ul>
         </section>
 
-        <section class="section">
+        <section>
             <h2>🛠 Key Projects</h2>
             <div class="project">
                 <h3>AIRI - Airui Intelligent Technology</h3>
                 <p><strong>Technologies:</strong> Node.js, Express, AWS, ComfyUI</p>
                 <p>Created AIRI, an AI-driven platform for generating architectural styles, leveraging AWS services to scale image processing and ensure high availability.</p>
-                <p>Product URL: <a href="https://airilab.com">airilab.com</a></p>
+                <p>Product URL: <a href="https://airilab.com" target="_blank">airilab.com</a></p>
             </div>
             <div class="project">
                 <h3>Healthetile - Health eTile LLC</h3>
                 <p><strong>Technologies:</strong> ASP.NET Core, AWS</p>
                 <p>Developed a secure healthcare data platform with ML-based anomaly detection for patient vitals, deployed on AWS ECS with continuous integration.</p>
-                <p>Product URL: <a href="https://healthetile.io/">healthetile.io</a></p>
+                <p>Product URL: <a href="https://healthetile.io/" target="_blank">healthetile.io</a></p>
             </div>
             <div class="project">
                 <h3>DHA & CCP - DataFlow Groups</h3>
                 <p><strong>Technologies:</strong> .NET MVC, Oracle, MSSQL, GitLab</p>
                 <p>Optimized packages and implemented payment microservice for the Dubai Health Authority and CCP, implementing secure agent logins, form submissions, and MiGS payment integration through Email.</p>
-                <p>Product URL: <a href="https://dha.dfgateway.com/">dha.dfgateway.com</a></p>
+                <p>Product URL: <a href="https://dha.dfgateway.com/" target="_blank">dha.dfgateway.com</a></p>
             </div>
             <div class="project">
                 <h3>Saina Health</h3>
                 <p><strong>Technologies:</strong> ASP.NET Core, MySQL</p>
                 <p>Developed a real-time admin health monitoring platform using ASP.NET Core, optimized and developed excel uploads and pdf generations.</p>
-                <p>Product URL: <a href="https://www.sainahealth.com/">sainahealth.com</a></p>
+                <p>Product URL: <a href="https://www.sainahealth.com/" target="_blank">sainahealth.com</a></p>
             </div>
         </section>
 
-        <section class="section">
+        <section>
             <h2>📚 Professional Experience</h2>
             <p><strong>Software Developer, Promena | Oct 2020 - Present</strong></p>
             <ul>
@@ -175,7 +192,7 @@
             </ul>
         </section>
 
-        <section class="section">
+        <section>
             <h2>🌟 Achievements</h2>
             <ul>
                 <li>Delivered high-availability applications with zero downtime, enhancing user satisfaction and engagement.</li>
@@ -187,9 +204,9 @@
 
         <footer>
             <p>📧 Contact: <a href="mailto:amithbharadwaj08@gmail.com">amithbharadwaj08@gmail.com</a> | 📱 Phone: +91 7892954711</p>
-            <p>💼 LinkedIn: <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101">linkedin.com/in/amith-baradwaj-kh</a></p>
-            <p>🌐 Website: <a href="https://amithbharadwaj08.wordpress.com/">amithbharadwaj08.wordpress.com</a></p>
+            <p>💼 LinkedIn: <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101" target="_blank">linkedin.com/in/amith-baradwaj-kh</a></p>
+            <p>🌐 Website: <a href="https://amithbharadwaj08.wordpress.com/" target="_blank">amithbharadwaj08.wordpress.com</a></p>
         </footer>
     </div>
 </body>
-</html
+</html>
