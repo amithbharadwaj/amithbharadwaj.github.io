@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amith Baradwaj KH's Professional Portfolio</title>
     <style>
-        /* Global Styles */
+       /* Global Styles */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7fb;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             color: #333;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
         .container {
             width: 80%;
             max-width: 900px;
             margin: 40px auto;
             padding: 30px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-out;
         }
 
         /* Header Section */
@@ -33,29 +34,32 @@
             margin-bottom: 40px;
         }
         header h1 {
-            font-size: 2.5em;
-            color: #0056b3;
+            font-size: 3em;
+            color: #ff5e78;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: bounce 1s infinite alternate;
         }
         .intro {
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: #555;
             font-weight: 300;
         }
 
         /* Section Titles */
         h2 {
-            font-size: 1.7em;
-            color: #0056b3;
-            border-bottom: 2px solid #0056b3;
+            font-size: 2em;
+            color: #ff5e78;
+            border-bottom: 2px dashed #ff5e78;
             padding-bottom: 5px;
             margin-bottom: 15px;
+            animation: slideInLeft 1s ease-out;
         }
 
-        /* List and Bullet points */
+        /* List and Bullet Points */
         ul {
-            list-style-type: none;
-            padding-left: 0;
+            list-style-type: disc;
+            padding-left: 20px;
         }
         ul li {
             margin-bottom: 10px;
@@ -64,35 +68,36 @@
 
         /* Projects Section */
         .project {
-            background-color: #f9f9fc;
-            border-left: 4px solid #0056b3;
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+            border-left: 6px solid #ff5e78;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 15px;
             margin-bottom: 20px;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            transform: rotate(-1deg);
+            transition: transform 0.4s ease, box-shadow 0.3s ease;
         }
         .project:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            transform: scale(1.02);
+            transform: rotate(2deg) scale(1.03);
         }
         .project h3 {
             color: #333;
-            font-size: 1.3em;
+            font-size: 1.5em;
         }
         .project p {
-            font-size: 1em;
+            font-size: 1.1em;
             color: #666;
         }
 
         /* Links */
         a {
-            color: #007bff;
+            color: #ff5e78;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: color 0.3s, transform 0.3s;
         }
         a:hover {
-            color: #0056b3;
-            text-decoration: underline;
+            color: #ff9a9e;
+            transform: scale(1.1);
         }
 
         /* Footer */
@@ -100,9 +105,9 @@
             text-align: center;
             margin-top: 30px;
             padding-top: 20px;
-            font-size: 0.9em;
-            color: #777;
-            border-top: 2px solid #eee;
+            font-size: 1em;
+            color: #555;
+            border-top: 2px dashed #ff5e78;
         }
 
         footer p {
@@ -110,18 +115,51 @@
         }
 
         footer a {
-            color: #0056b3;
+            color: #ff5e78;
         }
 
         /* Animations */
-        @keyframes fadeInUp {
+        @keyframes fadeIn {
             0% {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.8);
             }
             100% {
                 opacity: 1;
+                transform: scale(1);
+            }
+        }
+        @keyframes slideInLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes bounce {
+            0% {
                 transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Funky Animations for Projects */
+        .project {
+            animation: rotateIn 1s ease-out;
+        }
+        @keyframes rotateIn {
+            0% {
+                transform: rotate(-10deg) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: rotate(0) scale(1);
+                opacity: 1;
             }
         }
 
@@ -132,27 +170,27 @@
             }
 
             header h1 {
-                font-size: 2em; /* Smaller heading on mobile */
+                font-size: 2.5em;
             }
 
             .intro {
-                font-size: 1em; /* Smaller intro text on mobile */
+                font-size: 1.1em;
             }
 
             h2 {
-                font-size: 1.4em; /* Slightly smaller subheading on mobile */
+                font-size: 1.6em;
             }
 
             .project h3 {
-                font-size: 1.1em; /* Smaller project title on mobile */
+                font-size: 1.2em;
             }
 
             .project p {
-                font-size: 0.95em; /* Adjust project description font size for mobile */
+                font-size: 1em;
             }
 
             footer {
-                font-size: 0.8em; /* Smaller footer text on mobile */
+                font-size: 0.9em;
             }
         }
     </style>
