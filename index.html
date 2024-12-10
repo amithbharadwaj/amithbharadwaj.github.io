@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amith Baradwaj KH's Professional Portfolio</title>
     <style>
-       /* Global Styles */
+        /* Global Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -38,12 +38,13 @@
             color: #007bb5; /* Blue accent for header text */
             margin-bottom: 10px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-            animation: bounce 1s infinite alternate;
+            animation: bounce 1.5s infinite alternate;
         }
         .intro {
             font-size: 1.2em;
             color: #555;
             font-weight: 300;
+            animation: fadeInUp 2s ease-out;
         }
 
         /* Section Titles */
@@ -54,16 +55,34 @@
             padding-bottom: 5px;
             margin-bottom: 15px;
             animation: slideInLeft 1s ease-out;
+            position: relative;
+        }
+        h2::after {
+            content: "🌟";
+            position: absolute;
+            right: -30px;
+            top: 0;
+            animation: rotate 2s infinite linear;
         }
 
         /* List and Bullet Points */
         ul {
             list-style-type: disc;
             padding-left: 20px;
+            animation: fadeInUp 2s ease-out;
         }
         ul li {
             margin-bottom: 10px;
             color: #444;
+            position: relative;
+            animation: slideInRight 0.5s ease-in;
+        }
+        ul li::before {
+            content: "✔️";
+            position: absolute;
+            left: -25px;
+            top: 0;
+            animation: bounceIn 1s infinite alternate;
         }
 
         /* Projects Section */
@@ -73,19 +92,24 @@
             padding: 15px;
             border-radius: 15px;
             margin-bottom: 20px;
+            transform: rotate(-1deg);
             transition: transform 0.4s ease, box-shadow 0.3s ease;
+            animation: zoomIn 1s ease-out;
         }
         .project:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            transform: scale(1.03);
+            transform: rotate(2deg) scale(1.03);
+            animation: pulse 1s infinite alternate;
         }
         .project h3 {
             color: #333;
             font-size: 1.5em;
+            animation: fadeInLeft 1.5s ease-out;
         }
         .project p {
             font-size: 1.1em;
             color: #555;
+            animation: fadeInRight 1.5s ease-out;
         }
 
         /* Links */
@@ -97,6 +121,7 @@
         a:hover {
             color: #005780;
             transform: scale(1.1);
+            animation: rubberBand 1s ease-in-out;
         }
 
         /* Footer */
@@ -107,6 +132,7 @@
             font-size: 1em;
             color: #555;
             border-top: 2px solid #eee;
+            animation: slideInUp 2s ease-out;
         }
 
         footer p {
@@ -128,14 +154,72 @@
                 transform: scale(1);
             }
         }
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
         @keyframes slideInLeft {
             0% {
+                opacity: 0;
                 transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes slideInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0.8);
                 opacity: 0;
             }
             100% {
-                transform: translateX(0);
+                transform: scale(1);
                 opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.05);
             }
         }
         @keyframes bounce {
@@ -144,6 +228,35 @@
             }
             100% {
                 transform: translateY(-10px);
+            }
+        }
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes rubberBand {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.25);
+            }
+            100% {
+                transform: scale(1);
             }
         }
 
