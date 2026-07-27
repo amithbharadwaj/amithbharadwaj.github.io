@@ -876,6 +876,20 @@
             transform: translate(2px, -2px);
         }
 
+        /* Architecture Scroll Hint */
+        .arch-scroll-hint {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         /* Architecture Layout */
         .arch-layout {
             display: grid;
@@ -1419,6 +1433,30 @@
         }
 
         @media (max-width: 768px) {
+            .arch-scroll-hint {
+                display: flex;
+            }
+            .arch-diagram-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 1rem;
+                width: 100%;
+            }
+            .arch-diagram-wrapper::-webkit-scrollbar {
+                height: 4px;
+            }
+            .arch-diagram-wrapper::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.02);
+                border-radius: 99px;
+            }
+            .arch-diagram-wrapper::-webkit-scrollbar-thumb {
+                background: linear-gradient(90deg, var(--primary), var(--secondary));
+                border-radius: 99px;
+            }
+            .arch-svg {
+                min-width: 600px;
+                height: 360px;
+            }
             .navbar {
                 top: 1rem;
                 width: calc(100% - 2rem);
@@ -1984,8 +2022,12 @@
             
             <div class="arch-layout animate-on-scroll">
                 <!-- Left: SVG Diagram -->
-                <div class="arch-diagram-wrapper">
-                    <!-- Global definitions for gradients -->
+                <div class="arch-diagram-container" style="width: 100%; overflow: hidden; display: flex; flex-direction: column;">
+                    <div class="arch-scroll-hint">
+                        <i class="fas fa-arrows-alt-h"></i> Swipe horizontally to explore diagram
+                    </div>
+                    <div class="arch-diagram-wrapper">
+                        <!-- Global definitions for gradients -->
                     <svg style="position: absolute; width: 0; height: 0;">
                         <defs>
                             <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2625,8 +2667,9 @@
                         </foreignObject>
                     </svg>
                 </div>
-                
-                <!-- Right: Details Card -->
+            </div>
+            
+            <!-- Right: Details Card -->
                 <div class="arch-details-wrapper">
                     <div class="arch-details-card">
                         <div class="arch-details-header">
