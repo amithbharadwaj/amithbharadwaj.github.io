@@ -18,22 +18,34 @@
     
     <style>
         :root {
-            --primary-color: #60a5fa;
-            --secondary-color: #3b82f6;
-            --accent-color: #93c5fd;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-light: #94a3b8;
-            --bg-primary: #1e293b;
-            --bg-secondary: #0f172a;
-            --bg-accent: #334155;
-            --border-color: #475569;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-            --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --primary: #06b6d4; /* Neon Cyan */
+            --primary-glow: rgba(6, 182, 212, 0.15);
+            --secondary: #8b5cf6; /* Electric Violet */
+            --secondary-glow: rgba(139, 92, 246, 0.15);
+            --accent: #3b82f6; /* Royal Blue */
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            
+            --bg-darker: #030712; /* zinc-950 */
+            --bg-dark: #080d1a; /* deep cosmic dark */
+            --bg-card: rgba(17, 24, 39, 0.45); /* dark glass */
+            --bg-card-hover: rgba(23, 31, 51, 0.65);
+            
+            --text-primary: #f9fafb; /* gray-50 */
+            --text-secondary: #d1d5db; /* gray-300 */
+            --text-muted: #9ca3af; /* gray-400 */
+            --text-dim: #6b7280; /* gray-500 */
+            
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --border-glass-hover: rgba(255, 255, 255, 0.1);
+            
+            --shadow-sm: 0 2px 8px -1px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 25px -5px var(--primary-glow);
+            
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -42,12 +54,23 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Sora', 'Segoe UI', sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            scroll-behavior: smooth;
+            background-color: var(--bg-darker);
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        html, body {
+            overflow-x: hidden;
         }
 
         h1, h2, h3 {
@@ -55,867 +78,1489 @@
             letter-spacing: -0.02em;
         }
 
-        /* Navigation */
-        .navbar {
+        /* Scroll Progress Bar */
+        #scroll-progress {
             position: fixed;
             top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            z-index: 2000;
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        ::selection {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        /* Ambient Glow Blobs */
+        .glow-blobs-container {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.1;
+            animation: floatGlow 15s infinite alternate ease-in-out;
+        }
+        .glow-blob-1 {
+            top: 5%;
+            left: 10%;
+            width: 350px;
+            height: 350px;
+            background: var(--primary);
+        }
+        .glow-blob-2 {
+            top: 35%;
+            right: 5%;
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            animation-delay: -5s;
+        }
+        .glow-blob-3 {
+            top: 65%;
+            left: 5%;
+            width: 350px;
+            height: 350px;
+            background: var(--accent);
+            animation-delay: -10s;
+        }
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 30px) scale(1.05); }
+            100% { transform: translate(-30px, -40px) scale(0.95); }
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-darker);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity var(--transition-slow), visibility var(--transition-slow);
+        }
+        #preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .loader-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulseLogo 2s infinite ease-in-out;
+        }
+        .loader-bar {
+            width: 140px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loader-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: fillProgress 1.6s cubic-bezier(0.65, 0.05, 0.36, 1) forwards;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        @keyframes fillProgress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Floating Navbar */
+        .navbar {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 3rem);
+            max-width: 1000px;
+            background: rgba(9, 13, 22, 0.4);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            border-radius: 1.25rem;
             z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            transition: all var(--transition-normal);
         }
-
         .navbar.scrolled {
-            box-shadow: var(--shadow-md);
+            background: rgba(3, 7, 18, 0.85);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow-lg);
+            top: 1rem;
         }
-
         .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #60a5fa 100%);
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
             text-decoration: none;
-            transition: background 0.4s ease;
+            transition: opacity var(--transition-fast);
         }
-
         .logo:hover {
-            background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
+            opacity: 0.85;
         }
-
         .nav-links {
             display: flex;
             list-style: none;
             gap: 2rem;
+            align-items: center;
         }
-
         .nav-links a {
             text-decoration: none;
             color: var(--text-secondary);
             font-weight: 500;
-            transition: color 0.3s ease;
+            font-size: 0.92rem;
+            transition: color var(--transition-fast);
             position: relative;
+            padding: 0.25rem 0;
         }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
         }
-
         .nav-links a::after {
             content: '';
             position: absolute;
             width: 0;
             height: 2px;
-            bottom: -5px;
+            bottom: -2px;
             left: 0;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width var(--transition-normal);
+            border-radius: 99px;
         }
-
-        .nav-links a:hover::after {
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
             width: 100%;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color var(--transition-fast);
+        }
+        .mobile-menu-btn:hover {
+            color: var(--primary);
         }
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            position: relative;
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            overflow: hidden;
             display: flex;
             align-items: center;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
+            min-height: 100vh;
+            z-index: 1;
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(96,165,250,0.1)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
-            background-size: cover;
-        }
-
         .hero-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 2rem;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            grid-template-columns: 1.15fr 0.85fr;
             align-items: center;
-            position: relative;
-            z-index: 1;
+            gap: 4rem;
+            width: 100%;
         }
-
-        .hero-content h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: clamp(0.5rem, 2vw, 1rem);
-            line-height: 1.2;
-            color: var(--text-primary);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .hero-content {
+            text-align: left;
+            z-index: 2;
         }
-
-        .hero-content .subtitle {
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            font-weight: 400;
-            margin-bottom: clamp(1rem, 3vw, 2rem);
-            opacity: 0.9;
-        }
-
-        .hero-content p {
-            font-size: clamp(1rem, 2vw, 1.1rem);
-            margin-bottom: clamp(1.5rem, 3vw, 2rem);
-            opacity: 0.9;
-            line-height: 1.8;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 2rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            text-decoration: none;
+        .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: all 0.3s ease;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 0.4rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: pulseBadge 3s infinite ease-in-out;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+        }
+        @keyframes pulseBadge {
+            0%, 100% { border-color: rgba(16, 185, 129, 0.15); background: rgba(16, 185, 129, 0.08); }
+            50% { border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.12); }
+        }
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 70%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+        .hero-content .subtitle {
+            font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+            display: inline-block;
+            min-height: 2.2rem;
+        }
+        .hero-content .subtitle::after {
+            content: '|';
+            animation: blink 0.75s step-end infinite;
+            color: var(--primary);
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            from, to { color: transparent }
+            50% { color: var(--primary); }
+        }
+        .hero-content p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            max-width: 580px;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+            border-top: 1px solid var(--border-glass);
+            padding-top: 2rem;
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1.25rem;
+        }
+        .btn {
+            padding: 0.85rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all var(--transition-normal);
             cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
-
         .btn-primary {
-            background: var(--primary-color);
-            color: var(--bg-secondary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--bg-darker);
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.2);
+            border: none;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            background: var(--secondary-color);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.35);
+            opacity: 0.95;
         }
-
         .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid var(--primary-color);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(5px);
         }
-
         .btn-secondary:hover {
-            background: var(--primary-color);
-            color: var(--bg-secondary);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-glass-hover);
+            transform: translateY(-2px);
         }
-
         .hero-image {
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            z-index: 2;
         }
-
-        .hero-avatar {
+        .hero-avatar-wrapper {
+            position: relative;
             width: 300px;
             height: 300px;
-            border-radius: 50%;
-            background: rgba(96, 165, 250, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8rem;
-            backdrop-filter: blur(10px);
-            border: 4px solid rgba(96, 165, 250, 0.3);
-            box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.08);
-            overflow: hidden;
         }
-
+        .hero-avatar-glow {
+            position: absolute;
+            width: 104%;
+            height: 104%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            filter: blur(20px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: rotateGlow 12s infinite linear;
+        }
+        .hero-avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+        .hero-avatar:hover {
+            transform: scale(1.02) rotate(1deg);
+        }
+        .hero-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .hero-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+        .hero-avatar:hover img {
+            transform: scale(1.06);
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* Section Styles */
+        /* Tech Marquee Container */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(9, 13, 22, 0.4);
+            border-top: 1px solid var(--border-glass);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1.25rem 0;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+        .marquee-content {
+            display: flex;
+            gap: 4rem;
+            width: max-content;
+            animation: marquee 35s linear infinite;
+        }
+        .marquee-content span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .marquee-content span i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Sections */
         .section {
-            padding: 5rem 0;
+            padding: 7.5rem 0;
+            position: relative;
+            z-index: 1;
         }
-
         .section-container {
-            max-width: min(1200px, 90%);
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 clamp(1rem, 5vw, 2rem);
+            padding: 0 2rem;
         }
-
         .section-header {
             text-align: center;
-            margin-bottom: clamp(2rem, 8vw, 4rem);
-            padding: 0 1rem;
+            margin-bottom: 4.5rem;
         }
-
         .section-title {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 40%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
         .section-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 540px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
-        /* Skills Section */
+        /* Spotlight Glow Effect */
+        .spotlight-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            background: radial-gradient(
+                450px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+                rgba(6, 182, 212, 0.07),
+                transparent 45%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+        .skill-card:hover .spotlight-glow,
+        .project-card:hover .spotlight-glow,
+        .achievement-card:hover .spotlight-glow,
+        .contact-card:hover .spotlight-glow {
+            opacity: 1;
+        }
+
+        /* Skills Grid */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
-
         .skill-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2.25rem 2rem;
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-glass);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
-
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            pointer-events: none;
+        }
         .skill-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
+            transform: translateY(-6px);
+            border-color: var(--border-glass-hover);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(6, 182, 212, 0.05);
         }
-
+        .skill-card:hover::before {
+            opacity: 1;
+        }
         .skill-card-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            position: relative;
+            z-index: 2;
         }
-
         .skill-icon {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 0.5rem;
-            background: var(--gradient-secondary);
+            width: 3.25rem;
+            height: 3.25rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
+            color: var(--primary);
+            font-size: 1.4rem;
+            transition: all var(--transition-normal);
         }
-
+        .skill-card:hover .skill-icon {
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: transparent;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
         .skill-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.6rem;
+            position: relative;
+            z-index: 2;
         }
-
         .skill-tag {
-            background: var(--bg-accent);
+            background: rgba(255, 255, 255, 0.02);
             color: var(--text-secondary);
-            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-glass);
+            padding: 0.35rem 0.85rem;
             border-radius: 2rem;
-            font-size: 0.875rem;
+            font-size: 0.825rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all var(--transition-fast);
         }
-
         .skill-tag:hover {
-            background: var(--primary-color);
-            color: white;
+            background: rgba(6, 182, 212, 0.08);
+            color: var(--primary);
+            border-color: rgba(6, 182, 212, 0.25);
+            transform: translateY(-1px);
         }
 
         /* Projects Section */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
             gap: 2rem;
         }
-
         .project-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-glass);
+            padding: 2.25rem 2rem;
+            transition: all var(--transition-normal);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
         }
-
-        .project-card::before {
+        .project-card::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-secondary);
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
         }
-
         .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-color);
+            transform: translateY(-8px);
+            border-color: var(--border-glass-hover);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(139, 92, 246, 0.04);
         }
-
+        .project-card:hover::after {
+            opacity: 1;
+        }
         .project-header {
             display: flex;
             align-items: flex-start;
-            gap: 1rem;
+            gap: 1.25rem;
             margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
         }
-
         .project-icon {
-            width: 3rem;
-            height: 3rem;
+            width: 3.25rem;
+            height: 3.25rem;
             border-radius: 0.75rem;
-            background: var(--gradient-primary);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.25rem;
+            color: var(--secondary);
+            font-size: 1.3rem;
             flex-shrink: 0;
+            transition: all var(--transition-normal);
         }
-
+        .project-card:hover .project-icon {
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-color: transparent;
+            box-shadow: 0 0 15px var(--secondary-glow);
+        }
         .project-info h3 {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
+            transition: color var(--transition-fast);
         }
-
+        .project-card:hover .project-info h3 {
+            color: var(--secondary);
+        }
         .project-type {
-            color: var(--text-light);
-            font-size: 0.875rem;
+            color: var(--text-dim);
+            font-size: 0.825rem;
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-
         .project-description {
             color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            line-height: 1.65;
+            font-size: 0.95rem;
+            margin-bottom: 1.75rem;
+            flex-grow: 1;
+            position: relative;
+            z-index: 2;
         }
-
         .project-tech {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
+            position: relative;
+            z-index: 2;
         }
-
         .tech-tag {
-            background: var(--bg-accent);
-            color: var(--text-secondary);
+            background: rgba(139, 92, 246, 0.06);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.15);
             padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
+            border-radius: 2rem;
             font-size: 0.75rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all var(--transition-fast);
         }
-
-        .tech-tag:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-1px);
+        .project-card:hover .tech-tag {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.25);
         }
-
         .project-links {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
+            border-top: 1px solid var(--border-glass);
+            padding-top: 1.25rem;
+            position: relative;
+            z-index: 2;
         }
-
         .project-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-
-        .project-link:hover {
-            color: var(--secondary-color);
-            transform: translateX(3px);
-        }
-
-        /* Experience Section */
-        .experience-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-        }
-
-        .experience-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .experience-company-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 0.35rem;
-        }
-
-        .company-logo {
-            width: 44px;
-            height: 44px;
-            border-radius: 0.5rem;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
-            background: var(--bg-accent);
-        }
-
-        .company-link {
-            color: var(--primary-color);
+            color: var(--text-primary);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
+            transition: color var(--transition-fast);
+        }
+        .project-link i {
+            font-size: 0.8rem;
+            transition: transform var(--transition-fast);
+        }
+        .project-link:hover {
+            color: var(--primary);
+        }
+        .project-link:hover i {
+            transform: translate(2px, -2px);
         }
 
-        .company-link:hover {
-            color: var(--secondary-color);
-        }
-
-        .proof-chip {
-            display: inline-flex;
+        /* Architecture Layout */
+        .arch-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.3rem 0.75rem;
-            border-radius: 999px;
-            background: rgba(96, 165, 250, 0.12);
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            border: 1px solid rgba(96, 165, 250, 0.25);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
         }
-
-        .experience-header {
+        .arch-categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .arch-cat-btn {
+            background: rgba(255, 255, 255, 0.01);
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .arch-cat-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-glass-hover);
+        }
+        .arch-cat-btn.active {
+            color: var(--primary);
+            background: rgba(6, 182, 212, 0.05);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            box-shadow: var(--shadow-glow);
+        }
+        .arch-tabs-group {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .arch-tab-btn {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 0.6rem 1.25rem;
+            border-radius: 99px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.825rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .arch-tab-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-glass-hover);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .arch-tab-btn.active {
+            color: var(--primary);
+            background: rgba(6, 182, 212, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+        }
+        .arch-diagram-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .arch-svg {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .arch-svg.active {
+            display: block;
+        }
+        .connector-line {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.08);
+            stroke-width: 2.5;
+            transition: stroke var(--transition-normal);
+        }
+        .connector-line-pulse {
+            fill: none;
+            stroke: url(#line-gradient);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-dasharray: 10, 80;
+            animation: pulseFlow 6s infinite linear;
+        }
+        @keyframes pulseFlow {
+            to { stroke-dashoffset: -90; }
+        }
+        .arch-card {
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid var(--border-glass);
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+        .arch-card i {
+            font-size: 1.1rem;
+            color: var(--primary);
+            transition: transform var(--transition-normal);
+        }
+        .arch-card:hover, .arch-card.active {
+            border-color: var(--primary);
+            background: rgba(23, 31, 51, 0.9);
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: scale(1.05);
+        }
+        .arch-card:hover i, .arch-card.active i {
+            transform: scale(1.1);
+            color: var(--secondary);
+        }
+        .arch-details-wrapper {
+            width: 100%;
+        }
+        .arch-details-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .arch-details-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
         }
-
-        .experience-icon {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 0.5rem;
-            background: var(--gradient-secondary);
+        .arch-details-header i {
+            font-size: 2.25rem;
+            color: var(--primary);
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+            width: 4rem;
+            height: 4rem;
+            border-radius: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
+            transition: all var(--transition-normal);
         }
-
-        .experience-title {
-            font-size: 1.5rem;
-            font-weight: 600;
+        .arch-details-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
             color: var(--text-primary);
         }
-
-        .experience-company {
+        .detail-badge {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.08);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            padding: 0.2rem 0.65rem;
+            border-radius: 99px;
+            font-size: 0.725rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .arch-details-text {
             color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        .arch-details-tech-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .arch-details-tech-block h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .arch-details-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        /* Professional Experience Timeline */
+        .timeline {
+            position: relative;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 2.5rem;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary), transparent);
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 5rem;
+            margin-bottom: 4rem;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-badge {
+            position: absolute;
+            left: 1.25rem;
+            top: 0.25rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: var(--bg-darker);
+            border: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 1rem;
+            z-index: 2;
+            box-shadow: 0 0 15px var(--secondary-glow);
+        }
+        .timeline-item:first-child .timeline-badge {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            animation: pulseDot 2.5s infinite;
+        }
+        .timeline-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            transition: all var(--transition-normal);
+        }
+        .timeline-card:hover {
+            transform: translateX(6px);
+            border-color: var(--border-glass-hover);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-md);
+        }
+        .experience-header-content {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1.25rem;
+        }
+        .experience-info-block {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.02);
+        }
+        .company-meta h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .company-name-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.15rem;
+            flex-wrap: wrap;
+        }
+        .company-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color var(--transition-fast);
+        }
+        .company-link:hover {
+            color: var(--accent);
+        }
+        .experience-date-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.825rem;
+            font-weight: 600;
+            align-self: flex-start;
+        }
+        .proof-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 99px;
+            background: rgba(6, 182, 212, 0.08);
+            color: var(--primary);
+            font-size: 0.75rem;
+            border: 1px solid rgba(6, 182, 212, 0.15);
             font-weight: 500;
         }
-
-        .experience-date {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
         .experience-list {
             list-style: none;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
         }
-
         .experience-list li {
             position: relative;
-            padding-left: 2rem;
-            margin-bottom: 1rem;
+            padding-left: 1.5rem;
             color: var(--text-secondary);
+            font-size: 0.95rem;
             line-height: 1.6;
         }
-
         .experience-list li::before {
-            content: '';
+            content: '→';
             position: absolute;
             left: 0;
-            top: 0.75rem;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--primary-color);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        @keyframes pulseDot {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
         }
 
         /* Achievements Section */
         .achievements-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 2rem;
         }
-
         .achievement-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2.5rem 2rem;
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-glass);
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
             position: relative;
+            overflow: hidden;
         }
-
         .achievement-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
+            transform: translateY(-6px);
+            border-color: var(--border-glass-hover);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-lg);
         }
-
         .achievement-icon {
-            width: 4rem;
-            height: 4rem;
+            width: 3.75rem;
+            height: 3.75rem;
             border-radius: 1rem;
-            background: var(--gradient-secondary);
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
+            color: var(--primary);
+            font-size: 1.4rem;
             margin: 0 auto 1.5rem;
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
+            position: relative;
+            z-index: 2;
         }
-
         .achievement-card:hover .achievement-icon {
-            transform: scale(1.1);
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            box-shadow: 0 0 15px var(--primary-glow);
         }
-
         .achievement-title {
-            font-size: 1.25rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
-
         .achievement-description {
             color: var(--text-secondary);
             line-height: 1.6;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
         }
-
         .achievement-number {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            background: rgba(96, 165, 250, 0.1);
+            top: 1.25rem;
+            right: 1.25rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            opacity: 0.4;
+            transition: color var(--transition-fast);
+            z-index: 2;
+        }
+        .achievement-card:hover .achievement-number {
+            color: var(--primary);
+            opacity: 1;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .contact-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 1.25rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
+            gap: 1rem;
+            transition: all var(--transition-normal);
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-glow);
+        }
+        .contact-card i {
+            font-size: 1.75rem;
+            color: var(--primary);
+            transition: transform var(--transition-normal);
+            position: relative;
+            z-index: 2;
+        }
+        .contact-card:hover i {
+            transform: scale(1.1);
+        }
+        .contact-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
             font-weight: 600;
-            color: var(--primary-color);
+            position: relative;
+            z-index: 2;
+        }
+        .contact-value {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            position: relative;
+            z-index: 2;
         }
 
         /* Footer */
         .footer {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 3rem 0;
+            background: var(--bg-darker);
+            padding: 4rem 0 3rem;
             text-align: center;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-glass);
+            position: relative;
+            z-index: 1;
         }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary-color);
-        }
-
         .footer-text {
-            color: var(--text-light);
-            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-size: 0.85rem;
         }
 
-        /* Mobile Navigation */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 0.5rem;
-            z-index: 1001;
-        }
-
-        .nav-links {
-            transition: all 0.3s ease;
-        }
-
-        /* Responsive Design */
-        @media (min-width: 2048px) {
-            .section-container {
-                max-width: 1800px;
-            }
-            .hero-container {
-                max-width: 1800px;
-                padding: 0 3rem;
-            }
-            .hero-content h1 {
-                font-size: 4rem;
-            }
-            .hero-content .subtitle {
-                font-size: 2rem;
-            }
-            .hero-content p {
-                font-size: 1.25rem;
-            }
-            .hero-avatar {
-                width: 350px;
-                height: 350px;
-            }
-            .stat-number {
-                font-size: 2.5rem;
-            }
-            .stat-label {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .hero-container {
-                gap: 2rem;
-            }
-            .hero-avatar {
-                width: 240px;
-                height: 240px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background: var(--bg-secondary);
-                padding: 1rem;
-                box-shadow: var(--shadow-md);
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-                z-index: 1000;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-                padding: 0.5rem;
-                z-index: 1000;
-            }
-
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 2rem;
-                padding: 1rem;
-                padding-top: 4rem;
-            }
-
-            .hero-content {
-                padding: 2rem 1rem;
-                margin-top: 2rem;
-            }
-
-            .hero-stats {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 2rem;
-            }
-
-            .hero-buttons {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .hero-avatar {
-                width: 200px;
-                height: 200px;
-                margin: 0 auto;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .skills-grid,
-            .projects-grid,
-            .achievements-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .project-links {
-                justify-content: center;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-content h1 {
-                font-size: 2rem;
-                word-wrap: break-word;
-            }
-
-            .hero-content .subtitle {
-                font-size: 1.2rem;
-            }
-
-            .hero-stats {
-                flex-direction: column;
-                align-items: center;
-                gap: 2rem;
-            }
-
-            .stat {
-                width: 100%;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Scroll Animation Utility */
         .animate-on-scroll {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-
         .animate-on-scroll.animated {
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-container {
+                gap: 3rem;
+            }
+            .hero-avatar-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .arch-layout {
+                grid-template-columns: 1fr;
+                padding: 2rem 1.5rem;
+                gap: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                top: 1rem;
+                width: calc(100% - 2rem);
+                padding: 0.75rem 1.25rem;
+                background: rgba(9, 13, 22, 0.85); /* Slightly darker for readability */
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: calc(100% + 0.5rem);
+                left: 0;
+                width: 100%;
+                background: rgba(9, 13, 22, 0.98);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--border-glass);
+                border-radius: 1rem;
+                padding: 1.5rem;
+                flex-direction: column;
+                gap: 1.25rem;
+                box-shadow: var(--shadow-lg);
+                z-index: 2000;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero {
+                min-height: auto;
+                padding-top: 8rem; /* Increased padding to completely clear fixed header */
+                padding-bottom: 4rem;
+                align-items: flex-start;
+            }
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
+                padding-top: 0;
+            }
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .hero-content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+                width: 100%;
+                border-top: 1px solid var(--border-glass);
+                padding-top: 1.5rem;
+            }
+            .stat-number {
+                font-size: 1.75rem;
+            }
+            .stat-label {
+                font-size: 0.7rem;
+            }
+            .hero-buttons {
+                justify-content: center;
+                width: 100%;
+            }
+            .hero-avatar-wrapper {
+                margin: 0 auto;
+                width: min(280px, 75vw);
+                height: min(280px, 75vw);
+            }
+            .section {
+                padding: 4.5rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .skills-grid, .projects-grid, .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+            .experience-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .experience-date-badge {
+                align-self: flex-start;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-container {
+                padding: 0 1.25rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn {
+                width: 100%;
+            }
+            .skill-card, .project-card, .contact-card {
+                padding: 1.75rem 1.25rem;
+            }
+            .timeline-card {
+                padding: 1.75rem 1.25rem;
+            }
+            .timeline-item {
+                padding-left: 2.25rem;
+            }
+            .timeline::before {
+                left: 1.25rem;
+            }
+            .timeline-badge {
+                left: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo">ABKH</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-progress"></div>
+
+    <!-- Background glow elements -->
+    <div class="glow-blobs-container">
+        <div class="glow-blob glow-blob-1"></div>
+        <div class="glow-blob glow-blob-2"></div>
+        <div class="glow-blob glow-blob-3"></div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
@@ -924,10 +1569,11 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li><a href="#architecture">Architecture</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <button class="mobile-menu-btn">
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -937,21 +1583,25 @@
     <section class="hero" id="home">
         <div class="hero-container">
             <div class="hero-content">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    Available for Opportunities
+                </div>
                 <h1>Amith Baradwaj KH</h1>
-                <p class="subtitle">Senior Software Developer</p>
-                <p>Passionate software developer specializing in scalable web applications, cloud integrations, and DevOps. With over 4 years of experience in .NET Core, ASP.NET, and Node.js, I'm focused on delivering high-quality, efficient solutions.</p>
+                <p class="subtitle" id="typewriter-text"></p>
+                <p>Passionate software developer specializing in scalable web applications, cloud integrations, and DevOps. With over 5 years of experience in .NET Core, ASP.NET, and Node.js, I'm focused on delivering high-quality, efficient solutions.</p>
                 
                 <div class="hero-stats">
                     <div class="stat">
-                        <span class="stat-number">5+</span>
+                        <span class="stat-number" data-target="5" data-suffix="+">0</span>
                         <span class="stat-label">Years Experience</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">15+</span>
+                        <span class="stat-number" data-target="15" data-suffix="+">0</span>
                         <span class="stat-label">Projects Completed</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">75%</span>
+                        <span class="stat-number" data-target="75" data-suffix="%">0</span>
                         <span class="stat-label">Deployment Optimization</span>
                     </div>
                 </div>
@@ -968,12 +1618,45 @@
                 </div>
             </div>
             <div class="hero-image">
-                <div class="hero-avatar">
-                    <img src="https://airi-assets-1.s3.cn-north-1.amazonaws.com.cn/public/public/amith.png" alt="Amith Baradwaj KH portrait">
+                <div class="hero-avatar-wrapper">
+                    <div class="hero-avatar-glow"></div>
+                    <div class="hero-avatar">
+                        <div class="hero-avatar-inner">
+                            <img src="https://airi-assets-1.s3.cn-north-1.amazonaws.com.cn/public/public/amith.png" alt="Amith Baradwaj KH portrait">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Scrolling Tech Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <!-- Set 1 -->
+            <span><i class="fas fa-robot"></i> Gemini Nano</span>
+            <span><i class="fas fa-code-branch"></i> Banana Dev</span>
+            <span><i class="fas fa-brain"></i> OpenAI</span>
+            <span><i class="fab fa-microsoft"></i> Azure OpenAI</span>
+            <span><i class="fab fa-node-js"></i> Node.js</span>
+            <span><i class="fas fa-terminal"></i> ASP.NET Core</span>
+            <span><i class="fab fa-aws"></i> AWS Cloud</span>
+            <span><i class="fab fa-docker"></i> Docker</span>
+            <span><i class="fas fa-network-wired"></i> RabbitMQ</span>
+            <span><i class="fas fa-shield-alt"></i> HIPAA Security</span>
+            <!-- Set 2 -->
+            <span><i class="fas fa-robot"></i> Gemini Nano</span>
+            <span><i class="fas fa-code-branch"></i> Banana Dev</span>
+            <span><i class="fas fa-brain"></i> OpenAI</span>
+            <span><i class="fab fa-microsoft"></i> Azure OpenAI</span>
+            <span><i class="fab fa-node-js"></i> Node.js</span>
+            <span><i class="fas fa-terminal"></i> ASP.NET Core</span>
+            <span><i class="fab fa-aws"></i> AWS Cloud</span>
+            <span><i class="fab fa-docker"></i> Docker</span>
+            <span><i class="fas fa-network-wired"></i> RabbitMQ</span>
+            <span><i class="fas fa-shield-alt"></i> HIPAA Security</span>
+        </div>
+    </div>
 
     <!-- Skills Section -->
     <section class="section" id="skills">
@@ -984,6 +1667,25 @@
             </div>
             
             <div class="skills-grid">
+                <!-- Skill: AI Agents (NEW) -->
+                <div class="skill-card animate-on-scroll">
+                    <div class="skill-card-header">
+                        <div class="skill-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Agent & LLM Integrations</h3>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Gemini Nano</span>
+                        <span class="skill-tag">Banana Dev</span>
+                        <span class="skill-tag">OpenAI API</span>
+                        <span class="skill-tag">Azure OpenAI</span>
+                        <span class="skill-tag">LangChain</span>
+                        <span class="skill-tag">Vector DBs</span>
+                    </div>
+                </div>
+
+                <!-- Skill 1 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -998,6 +1700,7 @@
                     </div>
                 </div>
 
+                <!-- Skill 2 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -1013,6 +1716,7 @@
                     </div>
                 </div>
 
+                <!-- Skill 3 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -1029,6 +1733,7 @@
                     </div>
                 </div>
 
+                <!-- Skill 4 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -1046,6 +1751,7 @@
                     </div>
                 </div>
 
+                <!-- Skill 5 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -1061,6 +1767,7 @@
                     </div>
                 </div>
 
+                <!-- Skill 6 -->
                 <div class="skill-card animate-on-scroll">
                     <div class="skill-card-header">
                         <div class="skill-icon">
@@ -1086,142 +1793,861 @@
             </div>
             
             <div class="projects-grid">
+                <!-- Project 1 -->
                 <div class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <i class="fas fa-brain"></i>
+                    <div>
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>AIRI</h3>
+                                <p class="project-type">AI-Driven Platform</p>
+                            </div>
                         </div>
-                        <div class="project-info">
-                            <h3>AIRI - Airui Intelligent Technology</h3>
-                            <p class="project-type">AI-Driven Platform</p>
+                        <p class="project-description">
+                            Created AIRI, an AI-driven platform for generating architectural styles. Leveraged AWS services to scale image processing, and integrated international payment systems including Stripe, Alipay, and WeChat Pay.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Express</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">ComfyUI</span>
+                            <span class="tech-tag">Microservices</span>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Created AIRI, an AI-driven platform for generating architectural styles, leveraging AWS services to scale image processing and ensure high availability using microservice architecture.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">Express</span>
-                        <span class="tech-tag">AWS</span>
-                        <span class="tech-tag">ComfyUI</span>
-                        <span class="tech-tag">Microservices</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://airilab.com" class="project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Visit Project
+                        <a href="https://airilab.com" target="_blank" rel="noopener noreferrer" class="project-link">
+                            Visit Project <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 </div>
 
+                <!-- Project 2 -->
                 <div class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <i class="fas fa-heartbeat"></i>
+                    <div>
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>Healthetile</h3>
+                                <p class="project-type">Healthcare Data Platform</p>
+                            </div>
                         </div>
-                        <div class="project-info">
-                            <h3>Healthetile</h3>
-                            <p class="project-type">Healthcare Data Platform</p>
+                        <p class="project-description">
+                            Developed a secure healthcare data platform with ML-based anomaly detection for patient vitals, deployed on AWS ECS with continuous integration using CQRS architecture.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">ASP.NET Core</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">CQRS</span>
+                            <span class="tech-tag">ML</span>
+                            <span class="tech-tag">ECS</span>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Developed a secure healthcare data platform with ML-based anomaly detection for patient vitals, deployed on AWS ECS with continuous integration using CQRS architecture.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">ASP.NET Core</span>
-                        <span class="tech-tag">AWS</span>
-                        <span class="tech-tag">CQRS</span>
-                        <span class="tech-tag">ML</span>
-                        <span class="tech-tag">ECS</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://healthetile.io/" class="project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Visit Project
+                        <a href="https://healthetile.io/" target="_blank" rel="noopener noreferrer" class="project-link">
+                            Visit Project <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 </div>
 
+                <!-- Project 3 -->
                 <div class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <i class="fas fa-chart-line"></i>
+                    <div>
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>Ethax Trader</h3>
+                                <p class="project-type">DevOps & Cloud Infrastructure</p>
+                            </div>
                         </div>
-                        <div class="project-info">
-                            <h3>Ethax Trader</h3>
-                            <p class="project-type">DevOps & Cloud Infrastructure</p>
+                        <p class="project-description">
+                            Set up comprehensive CI/CD pipeline using GitHub Actions for the backend, created ECR repositories, and deployed microservices to ECS and Lightsail containers. Also deployed the frontend using AWS Amplify.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS DevOps</span>
+                            <span class="tech-tag">GitHub Actions</span>
+                            <span class="tech-tag">ECR</span>
+                            <span class="tech-tag">ECS</span>
+                            <span class="tech-tag">Amplify</span>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Set up comprehensive CI/CD pipeline using GitHub Actions for the backend, created ECR repositories, and deployed microservices to ECS and Lightsail containers. Also deployed the frontend using AWS Amplify.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">AWS DevOps</span>
-                        <span class="tech-tag">GitHub Actions</span>
-                        <span class="tech-tag">ECR</span>
-                        <span class="tech-tag">ECS</span>
-                        <span class="tech-tag">Amplify</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://app.ethax.com/" class="project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Visit Project
+                        <a href="https://app.ethax.com/" target="_blank" rel="noopener noreferrer" class="project-link">
+                            Visit Project <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 </div>
 
+                <!-- Project 4 -->
                 <div class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <i class="fas fa-hospital"></i>
+                    <div>
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <i class="fas fa-hospital"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>DHA & CCP</h3>
+                                <p class="project-type">Dubai Health Authority</p>
+                            </div>
                         </div>
-                        <div class="project-info">
-                            <h3>DHA & CCP</h3>
-                            <p class="project-type">Dubai Health Authority</p>
+                        <p class="project-description">
+                            Optimized packages and implemented payment microservice for Dubai Health Authority and CCP, implementing secure agent logins, form submissions, and MiGS payment integration.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">.NET MVC</span>
+                            <span class="tech-tag">Oracle</span>
+                            <span class="tech-tag">MSSQL</span>
+                            <span class="tech-tag">GitLab</span>
+                            <span class="tech-tag">MiGS</span>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Optimized packages and implemented payment microservice for Dubai Health Authority and CCP, implementing secure agent logins, form submissions, and MiGS payment integration.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">.NET MVC</span>
-                        <span class="tech-tag">Oracle</span>
-                        <span class="tech-tag">MSSQL</span>
-                        <span class="tech-tag">GitLab</span>
-                        <span class="tech-tag">MiGS</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://dha.dfgateway.com/" class="project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Visit Project
+                        <a href="https://dha.dfgateway.com/" target="_blank" rel="noopener noreferrer" class="project-link">
+                            Visit Project <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 </div>
 
+                <!-- Project 5 -->
                 <div class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <div class="project-icon">
-                            <i class="fas fa-user-md"></i>
+                    <div>
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>Saina Health</h3>
+                                <p class="project-type">Health Monitoring Platform</p>
+                            </div>
                         </div>
-                        <div class="project-info">
-                            <h3>Saina Health</h3>
-                            <p class="project-type">Health Monitoring Platform</p>
+                        <p class="project-description">
+                            Developed a real-time admin health monitoring platform using ASP.NET Core, optimized and developed Excel uploads and PDF generations with monolithic architecture.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">ASP.NET Core</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">Real-time</span>
+                            <span class="tech-tag">PDF Generation</span>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Developed a real-time admin health monitoring platform using ASP.NET Core, optimized and developed Excel uploads and PDF generations with monolithic architecture.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">ASP.NET Core</span>
-                        <span class="tech-tag">MySQL</span>
-                        <span class="tech-tag">Real-time</span>
-                        <span class="tech-tag">PDF Generation</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://www.sainahealth.com/" class="project-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Visit Project
+                        <a href="https://www.sainahealth.com/" target="_blank" rel="noopener noreferrer" class="project-link">
+                            Visit Project <i class="fas fa-external-link-alt"></i>
                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="section" id="architecture">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">System Design Playground</h2>
+                <p class="section-subtitle">Interactive blueprints of specialized AI workflows, AWS cloud layouts, security gateways, and CI/CD pipelines</p>
+            </div>
+
+            <!-- Categories Switcher Container -->
+            <div class="arch-categories">
+                <button class="arch-cat-btn active" data-category="ai">AI Agent Deployments</button>
+                <button class="arch-cat-btn" data-category="coding">Coding Architectures</button>
+                <button class="arch-cat-btn" data-category="aws-deploy">AWS Deployments</button>
+            </div>
+
+            <!-- AI Agent Deployments Tabs -->
+            <div class="arch-tabs-group" id="group-ai">
+                <button class="arch-tab-btn active" data-arch="ai">AI Agent Pipeline</button>
+                <button class="arch-tab-btn" data-arch="lookup">Semantic Template Search</button>
+            </div>
+
+            <!-- Coding Architectures Tabs -->
+            <div class="arch-tabs-group" id="group-coding" style="display: none;">
+                <button class="arch-tab-btn" data-arch="microservices">API Microservices</button>
+                <button class="arch-tab-btn" data-arch="payment">Payment Pipeline</button>
+                <button class="arch-tab-btn" data-arch="auth">Auth & Rate Limiting</button>
+            </div>
+
+            <!-- AWS Deployments Tabs -->
+            <div class="arch-tabs-group" id="group-aws-deploy" style="display: none;">
+                <button class="arch-tab-btn" data-arch="aws">AWS Fargate Stack</button>
+                <button class="arch-tab-btn" data-arch="lightsail">GitHub -> Lightsail</button>
+                <button class="arch-tab-btn" data-arch="ec2">GitLab -> EC2</button>
+                <button class="arch-tab-btn" data-arch="cicd">ECS Fargate CI/CD</button>
+                <button class="arch-tab-btn" data-arch="jenkins">Jenkins Deploy</button>
+            </div>
+            
+            <div class="arch-layout animate-on-scroll">
+                <!-- Left: SVG Diagram -->
+                <div class="arch-diagram-wrapper">
+                    <!-- Global definitions for gradients -->
+                    <svg style="position: absolute; width: 0; height: 0;">
+                        <defs>
+                            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.2" />
+                                <stop offset="50%" stop-color="var(--secondary)" stop-opacity="1" />
+                                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.2" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <!-- SVG 1: AI Agent Pipeline -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg active" id="svg-ai">
+                        <!-- Connection Lines -->
+                        <!-- Client -> Azure OpenAI -->
+                        <path d="M 160 180 H 240" class="connector-line" />
+                        <path d="M 160 180 H 240" class="connector-line-pulse" />
+                        
+                        <!-- Azure OpenAI -> Bing Search -->
+                        <path d="M 300 150 V 90" class="connector-line" />
+                        <path d="M 300 150 V 90" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <!-- Azure OpenAI -> Nano Banana -->
+                        <path d="M 360 170 L 440 100" class="connector-line" />
+                        <path d="M 360 170 L 440 100" class="connector-line-pulse" style="animation-delay: -3s;" />
+                        
+                        <!-- Azure OpenAI -> OpenAI Vision -->
+                        <path d="M 360 190 L 440 260" class="connector-line" />
+                        <path d="M 360 190 L 440 260" class="connector-line-pulse" style="animation-delay: -4.5s;" />
+                        
+                        <!-- Azure OpenAI -> Processing Workers -->
+                        <path d="M 300 210 V 270" class="connector-line" />
+                        <path d="M 300 210 V 270" class="connector-line-pulse" style="animation-delay: -6s;" />
+
+                        <!-- Nodes -->
+                        <!-- Client: x=40, y=150 -->
+                        <foreignObject x="40" y="150" width="120" height="60">
+                            <div class="arch-card active" data-node="client">
+                                <i class="fas fa-desktop"></i>
+                                <span>User Client</span>
+                            </div>
+                        </foreignObject>
+
+                        <!-- Azure OpenAI Orchestrator: x=240, y=150 -->
+                        <foreignObject x="240" y="150" width="120" height="60">
+                            <div class="arch-card" data-node="azure_openai">
+                                <i class="fas fa-brain"></i>
+                                <span>Azure OpenAI</span>
+                            </div>
+                        </foreignObject>
+
+                        <!-- Bing Web Search: x=240, y=30 -->
+                        <foreignObject x="240" y="30" width="120" height="60">
+                            <div class="arch-card" data-node="bing_search">
+                                <i class="fas fa-search"></i>
+                                <span>Bing Search</span>
+                            </div>
+                        </foreignObject>
+
+                        <!-- Nano Banana: x=440, y=70 -->
+                        <foreignObject x="440" y="70" width="120" height="60">
+                            <div class="arch-card" data-node="nano_banana">
+                                <i class="fas fa-robot"></i>
+                                <span>Nano Banana</span>
+                            </div>
+                        </foreignObject>
+
+                        <!-- OpenAI Vision: x=440, y=230 -->
+                        <foreignObject x="440" y="230" width="120" height="60">
+                            <div class="arch-card" data-node="openai_vision">
+                                <i class="fas fa-eye"></i>
+                                <span>OpenAI Vision</span>
+                            </div>
+                        </foreignObject>
+
+                        <!-- Processing Workers: x=240, y=270 -->
+                        <foreignObject x="240" y="270" width="120" height="60">
+                            <div class="arch-card" data-node="processing_workers">
+                                <i class="fas fa-cogs"></i>
+                                <span>Design Workers</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 1b: Semantic Template Search -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-lookup">
+                        <!-- Ingestion Flow Path (Top) -->
+                        <path d="M 160 80 H 240" class="connector-line" />
+                        <path d="M 160 80 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 80 H 440" class="connector-line" />
+                        <path d="M 360 80 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 110 V 250" class="connector-line" />
+                        <path d="M 500 110 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <!-- Query Flow Path (Bottom) -->
+                        <path d="M 160 280 H 240" class="connector-line" />
+                        <path d="M 160 280 H 240" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 360 280 H 440" class="connector-line" />
+                        <path d="M 360 280 H 440" class="connector-line-pulse" style="animation-delay: -5.5s;" />
+
+                        <!-- Return Results Path (Dotted curves from DB back to Client) -->
+                        <path d="M 440 280 Q 300 340 160 280" class="connector-line" stroke-dasharray="4,4" />
+                        <path d="M 440 280 Q 300 340 160 280" class="connector-line-pulse" stroke-dasharray="4,4" style="animation-delay: -6s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="50" width="120" height="60">
+                            <div class="arch-card" data-node="img_library">
+                                <i class="fas fa-images"></i>
+                                <span>Template Library</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="50" width="120" height="60">
+                            <div class="arch-card" data-node="banana_tagger">
+                                <i class="fas fa-robot"></i>
+                                <span>Nano Banana</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="50" width="120" height="60">
+                            <div class="arch-card" data-node="azure_embed">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Azure Embed</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="qdrant_db">
+                                <i class="fas fa-database"></i>
+                                <span>Qdrant DB</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="query_embed">
+                                <i class="fas fa-key"></i>
+                                <span>Query Vector</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="40" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="user_search">
+                                <i class="fas fa-search"></i>
+                                <span>Search Input</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 2: AWS Fargate Stack -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-aws">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 300 160 V 100 H 440" class="connector-line" />
+                        <path d="M 300 160 V 100 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 130 V 250" class="connector-line" />
+                        <path d="M 500 130 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 300 220 V 250" class="connector-line" />
+                        <path d="M 300 220 V 250" class="connector-line-pulse" style="animation-delay: -4.5s;" />
+
+                        <path d="M 240 280 H 100 V 220" class="connector-line" />
+                        <path d="M 240 280 H 100 V 220" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="route53">
+                                <i class="fas fa-cloud"></i>
+                                <span>Route 53 & CDN</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="alb">
+                                <i class="fas fa-network-wired"></i>
+                                <span>AWS ALB</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="70" width="120" height="60">
+                            <div class="arch-card" data-node="ecs">
+                                <i class="fas fa-cubes"></i>
+                                <span>ECS Fargate</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="rds">
+                                <i class="fas fa-database"></i>
+                                <span>RDS / DocDB</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="s3">
+                                <i class="fas fa-folder-open"></i>
+                                <span>S3 Storage</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 3: API Microservices -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-microservices">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 300 220 V 250" class="connector-line" />
+                        <path d="M 300 220 V 250" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 300 160 V 100 H 440" class="connector-line" />
+                        <path d="M 300 160 V 100 H 440" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 500 130 V 250" class="connector-line" />
+                        <path d="M 500 130 V 250" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 440 280 H 300 V 130" class="connector-line" />
+                        <path d="M 440 280 H 300 V 130" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="client_api">
+                                <i class="fas fa-desktop"></i>
+                                <span>Client Request</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="gateway_api">
+                                <i class="fas fa-route"></i>
+                                <span>API Gateway</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="auth_service">
+                                <i class="fas fa-key"></i>
+                                <span>Auth Service</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="70" width="120" height="60">
+                            <div class="arch-card" data-node="core_service">
+                                <i class="fas fa-cogs"></i>
+                                <span>Core Service</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="broker_api">
+                                <i class="fas fa-network-wired"></i>
+                                <span>Message Broker</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="70" width="120" height="60">
+                            <div class="arch-card" data-node="notify_service">
+                                <i class="fas fa-envelope"></i>
+                                <span>Notification</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 4: Payment Pipeline -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-payment">
+                        <!-- Connection Lines -->
+                        <path d="M 160 140 H 240" class="connector-line" />
+                        <path d="M 160 140 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 120 L 440 45" class="connector-line" />
+                        <path d="M 360 120 L 440 45" class="connector-line-pulse" style="animation-delay: -1s;" />
+                        
+                        <path d="M 360 140 L 440 115" class="connector-line" />
+                        <path d="M 360 140 L 440 115" class="connector-line-pulse" style="animation-delay: -2s;" />
+                        
+                        <path d="M 360 150 L 440 185" class="connector-line" />
+                        <path d="M 360 150 L 440 185" class="connector-line-pulse" style="animation-delay: -3s;" />
+                        
+                        <path d="M 360 160 L 440 255" class="connector-line" />
+                        <path d="M 360 160 L 440 255" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <!-- Webhook Return Paths (Bus at x=400, y=280 to x=360) -->
+                        <path d="M 440 45 H 400 V 280 H 360" class="connector-line" />
+                        <path d="M 440 45 H 400 V 280 H 360" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <path d="M 440 115 H 400 V 280 H 360" class="connector-line" />
+                        <path d="M 440 115 H 400 V 280 H 360" class="connector-line-pulse" style="animation-delay: -5.5s;" />
+
+                        <path d="M 440 185 H 400 V 280 H 360" class="connector-line" />
+                        <path d="M 440 185 H 400 V 280 H 360" class="connector-line-pulse" style="animation-delay: -6s;" />
+
+                        <path d="M 440 255 H 400 V 280 H 360" class="connector-line" />
+                        <path d="M 440 255 H 400 V 280 H 360" class="connector-line-pulse" style="animation-delay: -6.5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="110" width="120" height="60">
+                            <div class="arch-card" data-node="client_pay">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>User Checkout</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="110" width="120" height="60">
+                            <div class="arch-card" data-node="pay_router">
+                                <i class="fas fa-random"></i>
+                                <span>Payment Router</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="20" width="120" height="50">
+                            <div class="arch-card" data-node="stripe_node">
+                                <i class="fab fa-stripe-s"></i>
+                                <span>Stripe SDK</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="90" width="120" height="50">
+                            <div class="arch-card" data-node="migs_node">
+                                <i class="fas fa-university"></i>
+                                <span>MIGS (DHA)</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="50">
+                            <div class="arch-card" data-node="ap_wc_node">
+                                <i class="fas fa-wallet"></i>
+                                <span>Alipay & WeChat</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="230" width="120" height="50">
+                            <div class="arch-card" data-node="ccavenue_node">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>CCAvenue</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="pay_webhook">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Webhook Handler</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 5: GitHub -> Lightsail -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-lightsail">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 190 H 440" class="connector-line" />
+                        <path d="M 360 190 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 220 V 250" class="connector-line" />
+                        <path d="M 500 220 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 240 280 H 100 V 220" class="connector-line" />
+                        <path d="M 240 280 H 100 V 220" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="git_lightsail">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git Push</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="gh_actions">
+                                <i class="fab fa-github"></i>
+                                <span>GitHub Actions</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="ecr_lightsail">
+                                <i class="fas fa-box-open"></i>
+                                <span>AWS ECR</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="lightsail_deploy">
+                                <i class="fas fa-server"></i>
+                                <span>Lightsail Host</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="email_notify">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email Notify</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 6: GitLab -> EC2 -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-ec2">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 190 H 440" class="connector-line" />
+                        <path d="M 360 190 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 220 V 250" class="connector-line" />
+                        <path d="M 500 220 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 240 280 H 100 V 220" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="git_ec2">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git Push</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="gh_actions_runner">
+                                <i class="fab fa-github"></i>
+                                <span>GitHub Actions</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="ecr_ec2">
+                                <i class="fas fa-box-open"></i>
+                                <span>AWS ECR</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="gitlab_runner">
+                                <i class="fab fa-gitlab"></i>
+                                <span>GitLab runner</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="ec2_deploy">
+                                <i class="fas fa-hdd"></i>
+                                <span>EC2 Server</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 7: ECS Fargate CI/CD -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-cicd">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 190 H 440" class="connector-line" />
+                        <path d="M 360 190 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 220 V 250" class="connector-line" />
+                        <path d="M 500 220 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 300 220 V 250" class="connector-line" />
+                        <path d="M 300 220 V 250" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4.5s;" />
+
+                        <path d="M 240 280 H 100 V 220" class="connector-line" />
+                        <path d="M 240 280 H 100 V 220" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="git">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git Push</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="cicd_runner">
+                                <i class="fas fa-cogs"></i>
+                                <span>CI/CD Actions</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="ecr">
+                                <i class="fas fa-box-open"></i>
+                                <span>ECR Registry</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="ecs_deploy">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>ECS Deploy</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="slack">
+                                <i class="fab fa-slack"></i>
+                                <span>Slack Notify</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 8: Auth & Rate Limiting -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-auth">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 190 H 440" class="connector-line" />
+                        <path d="M 360 190 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 220 V 250" class="connector-line" />
+                        <path d="M 500 220 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 240 280 H 100 V 220" class="connector-line" />
+                        <path d="M 240 280 H 100 V 220" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="client_request">
+                                <i class="fas fa-user-shield"></i>
+                                <span>Client Request</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="cloudflare_rate">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Cloudflare Auth</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="api_gateway">
+                                <i class="fas fa-route"></i>
+                                <span>Version Router</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="jwt_generator">
+                                <i class="fas fa-key"></i>
+                                <span>JWT Generator</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="token_cache">
+                                <i class="fas fa-database"></i>
+                                <span>Token Cache</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+
+                    <!-- SVG 9: Jenkins Deploy -->
+                    <svg viewBox="0 0 600 360" width="100%" height="100%" class="arch-svg" id="svg-jenkins">
+                        <!-- Connection Lines -->
+                        <path d="M 160 190 H 240" class="connector-line" />
+                        <path d="M 160 190 H 240" class="connector-line-pulse" />
+                        
+                        <path d="M 360 190 H 440" class="connector-line" />
+                        <path d="M 360 190 H 440" class="connector-line-pulse" style="animation-delay: -1.5s;" />
+                        
+                        <path d="M 500 220 V 250" class="connector-line" />
+                        <path d="M 500 220 V 250" class="connector-line-pulse" style="animation-delay: -3s;" />
+
+                        <path d="M 440 280 H 360" class="connector-line" />
+                        <path d="M 440 280 H 360" class="connector-line-pulse" style="animation-delay: -4s;" />
+
+                        <path d="M 240 280 H 160" class="connector-line" />
+                        <path d="M 240 280 H 160" class="connector-line-pulse" style="animation-delay: -5s;" />
+
+                        <path d="M 100 250 V 220" class="connector-line" />
+                        <path d="M 100 250 V 220" class="connector-line-pulse" style="animation-delay: -5.5s;" />
+
+                        <!-- Nodes -->
+                        <foreignObject x="40" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="git_jenkins">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git Push</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="jenkins_server">
+                                <i class="fas fa-server"></i>
+                                <span>Jenkins Build</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="160" width="120" height="60">
+                            <div class="arch-card" data-node="docker_compiler">
+                                <i class="fab fa-docker"></i>
+                                <span>Docker Build</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="440" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="ssh_agent">
+                                <i class="fas fa-key"></i>
+                                <span>SSH Host Connection</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="240" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="docker_deploy">
+                                <i class="fas fa-cubes"></i>
+                                <span>Docker Run</span>
+                            </div>
+                        </foreignObject>
+
+                        <foreignObject x="40" y="250" width="120" height="60">
+                            <div class="arch-card" data-node="jenkins_slack">
+                                <i class="fab fa-slack"></i>
+                                <span>Slack Alert</span>
+                            </div>
+                        </foreignObject>
+                    </svg>
+                </div>
+                
+                <!-- Right: Details Card -->
+                <div class="arch-details-wrapper">
+                    <div class="arch-details-card">
+                        <div class="arch-details-header">
+                            <i class="fas fa-desktop" id="detail-icon"></i>
+                            <div>
+                                <h3 id="detail-title">User Client & API Gateway</h3>
+                                <span class="detail-badge" id="detail-role">Interface Trigger</span>
+                            </div>
+                        </div>
+                        <p class="arch-details-text" id="detail-desc">
+                            Serves the front-end user experience, transmitting prompts to the orchestration engine. Supports websocket streams for real-time asset assembly and push notifications as images or workflows compile.
+                        </p>
+                        <div class="arch-details-tech-block">
+                            <h4>Technologies</h4>
+                            <div class="arch-details-tech" id="detail-tech">
+                                <span class="tech-tag">React / Next.js</span>
+                                <span class="tech-tag">WebSockets</span>
+                                <span class="tech-tag">REST API</span>
+                                <span class="tech-tag">AWS CloudFront</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1236,55 +2662,62 @@
                 <p class="section-subtitle">My journey as a software developer</p>
             </div>
             
-            <div class="experience-grid">
-                <div class="experience-card animate-on-scroll">
-                    <div class="experience-header">
-                        <div class="experience-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div>
-                            <h3 class="experience-title">Lead Backend Engineer</h3>
-                            <p class="experience-company">AIRILab</p>
-                            <p class="experience-date">July 2025 - Present</p>
-                            <div class="experience-company-row">
-                                <img class="company-logo" src="https://airi-assets-1.s3.cn-north-1.amazonaws.com.cn/public/public/amith.png" alt="AIRILab proof image">
-                                <a class="company-link" href="https://airilab.com/company/">airilab.com</a>
-                                <span class="proof-chip">
-                                    <i class="fas fa-check-circle"></i>
-                                    Proof image
-                                </span>
-                            </div>
-                        </div>
+            <div class="timeline">
+                <!-- Experience 1 -->
+                <div class="timeline-item animate-on-scroll">
+                    <div class="timeline-badge">
+                        <i class="fas fa-briefcase"></i>
                     </div>
-                    <ul class="experience-list">
-                        <li>Building scalable web platforms and AI-driven services with a focus on reliability, performance, and clean APIs</li>
-                        <li>Driving cloud automation and DevOps workflows to speed up delivery while keeping releases safe and repeatable</li>
-                        <li>Collaborating across product and design to ship features that improve user experience and time-to-value</li>
-                    </ul>
+                    <div class="timeline-card">
+                        <div class="experience-header-content">
+                            <div class="experience-info-block">
+                                <img class="company-logo" src="https://airi-assets-1.s3.cn-north-1.amazonaws.com.cn/public/public/amith.png" alt="AIRILab proof logo">
+                                <div class="company-meta">
+                                    <h3>Lead Backend Engineer</h3>
+                                    <div class="company-name-row">
+                                        <a class="company-link" href="https://airilab.com/company/" target="_blank" rel="noopener noreferrer">AIRILab (airilab.com)</a>
+                                        <span class="proof-chip">
+                                            <i class="fas fa-check-circle"></i> Proof
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="experience-date-badge">July 2025 - Present</span>
+                        </div>
+                        <ul class="experience-list">
+                            <li>Building scalable web platforms and AI-driven services with a focus on reliability, performance, and clean APIs.</li>
+                            <li>Driving cloud automation and DevOps workflows to speed up delivery while keeping releases safe and repeatable.</li>
+                            <li>Collaborating across product and design to ship features that improve user experience and time-to-value.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="experience-card animate-on-scroll">
-                    <div class="experience-header">
-                        <div class="experience-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div>
-                            <h3 class="experience-title">Technical Lead</h3>
-                            <p class="experience-company">Promena</p>
-                            <p class="experience-date">October 2020 - July 2025</p>
-                            <div class="experience-company-row">
-                                <img class="company-logo" src="https://promena.in/assets/team-amit.webp" alt="Promena profile image">
-                                <a class="company-link" href="https://promena.in/">promena.in</a>
-                            </div>
-                        </div>
+                <!-- Experience 2 -->
+                <div class="timeline-item animate-on-scroll">
+                    <div class="timeline-badge">
+                        <i class="fas fa-briefcase"></i>
                     </div>
-                    <ul class="experience-list">
-                        <li>Led backend development and cloud deployment for ASP.NET and Node.js applications, focusing on performance and scalability</li>
-                        <li>Implemented CI/CD pipelines, reducing deployment time by 75% and ensuring zero downtime for production releases</li>
-                        <li>Managed AWS infrastructure and DNS configurations for seamless application delivery and security</li>
-                        <li>Architected microservices solutions for high-availability healthcare and fintech applications</li>
-                        <li>Mentored junior developers and established best practices for code quality and security</li>
-                    </ul>
+                    <div class="timeline-card">
+                        <div class="experience-header-content">
+                            <div class="experience-info-block">
+                                <img class="company-logo" src="https://promena.in/assets/team-amit.webp" alt="Promena logo">
+                                <div class="company-meta">
+                                    <h3>Technical Lead</h3>
+                                    <div class="company-name-row">
+                                        <a class="company-link" href="https://promena.in/" target="_blank" rel="noopener noreferrer">Promena (promena.in)</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="experience-date-badge">October 2020 - July 2025</span>
+                        </div>
+                        <ul class="experience-list">
+                            <li>Led backend development and cloud deployment for ASP.NET and Node.js applications, focusing on performance and scalability.</li>
+                            <li>Implemented CI/CD pipelines, reducing deployment time by 75% and ensuring zero downtime for production releases.</li>
+                            <li>Managed AWS infrastructure and DNS configurations for seamless application delivery and security.</li>
+                            <li>Architected microservices solutions for high-availability healthcare and fintech applications.</li>
+                            <li>Mentored junior developers and established best practices for code quality and security.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1299,73 +2732,105 @@
             </div>
             
             <div class="achievements-grid">
+                <!-- Card 1 -->
                 <div class="achievement-card animate-on-scroll">
-                    <div class="achievement-number">01</div>
+                    <span class="achievement-number">01</span>
                     <div class="achievement-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="achievement-title">Zero Downtime Delivery</h3>
+                    <h3 class="achievement-title">Zero Downtime</h3>
                     <p class="achievement-description">Delivered high-availability applications with zero downtime, enhancing user satisfaction and engagement</p>
                 </div>
 
+                <!-- Card 2 -->
                 <div class="achievement-card animate-on-scroll">
-                    <div class="achievement-number">02</div>
+                    <span class="achievement-number">02</span>
                     <div class="achievement-icon">
                         <i class="fas fa-rocket"></i>
                     </div>
-                    <h3 class="achievement-title">75% Deployment Optimization</h3>
-                    <p class="achievement-description">Reduced deployment times by 75% through optimized CI/CD workflows, significantly improving team efficiency</p>
+                    <h3 class="achievement-title">75% Faster Deploy</h3>
+                    <p class="achievement-description">Reduced deployment times by 75% through optimized CI/CD workflows, significantly improving efficiency</p>
                 </div>
 
+                <!-- Card 3 -->
                 <div class="achievement-card animate-on-scroll">
-                    <div class="achievement-number">03</div>
+                    <span class="achievement-number">03</span>
                     <div class="achievement-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3 class="achievement-title">HIPAA Compliance</h3>
-                    <p class="achievement-description">Ensured data security and HIPAA compliance for healthcare projects, establishing robust data governance practices</p>
+                    <h3 class="achievement-title">HIPAA Compliant</h3>
+                    <p class="achievement-description">Ensured data security and HIPAA compliance for healthcare projects, establishing robust data governance</p>
                 </div>
 
+                <!-- Card 4 -->
                 <div class="achievement-card animate-on-scroll">
-                    <div class="achievement-number">04</div>
+                    <span class="achievement-number">04</span>
                     <div class="achievement-icon">
                         <i class="fas fa-code-branch"></i>
                     </div>
-                    <h3 class="achievement-title">Open Source Contributor</h3>
-                    <p class="achievement-description">Contributed to open-source initiatives, actively supporting collaboration within the developer community</p>
+                    <h3 class="achievement-title">OS Contributor</h3>
+                    <p class="achievement-description">Contributed to open-source initiatives, actively supporting collaboration within the dev community</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer" id="contact">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="mailto:amithbharadwaj08@gmail.com" class="footer-link">
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Let's connect and build something amazing together</p>
+            </div>
+            
+            <div class="contact-grid">
+                <a href="mailto:amithbharadwaj08@gmail.com" class="contact-card animate-on-scroll">
                     <i class="fas fa-envelope"></i>
-                    amithbharadwaj08@gmail.com
+                    <span class="contact-title">Email</span>
+                    <span class="contact-value">amithbharadwaj08@gmail.com</span>
                 </a>
-                <a href="tel:+917892954711" class="footer-link">
+                <a href="tel:+917892954711" class="contact-card animate-on-scroll">
                     <i class="fas fa-phone"></i>
-                    +91 7892954711
+                    <span class="contact-title">Phone</span>
+                    <span class="contact-value">+91 7892954711</span>
                 </a>
-                <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101" class="footer-link">
+                <a href="https://in.linkedin.com/in/amith-baradwaj-kh-8487ba101" target="_blank" rel="noopener noreferrer" class="contact-card animate-on-scroll">
                     <i class="fab fa-linkedin"></i>
-                    LinkedIn Profile
+                    <span class="contact-title">LinkedIn</span>
+                    <span class="contact-value">amith-baradwaj-kh-8487ba101</span>
                 </a>
-                <a href="https://amithbharadwaj08.wordpress.com/" class="footer-link">
+                <a href="https://amithbharadwaj08.wordpress.com/" target="_blank" rel="noopener noreferrer" class="contact-card animate-on-scroll">
                     <i class="fas fa-globe"></i>
-                    Blog
+                    <span class="contact-title">Blog</span>
+                    <span class="contact-value">amithbharadwaj08.wordpress.com</span>
                 </a>
             </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
             <p class="footer-text">
-                © 2024 Amith Baradwaj KH. All rights reserved. | Designed with passion for excellence.
+                © 2026 Amith Baradwaj KH. All rights reserved. | Designed with passion for excellence.
             </p>
         </div>
     </footer>
 
     <script>
+        // Preloader & Load transition
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = '1';
+        });
+
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('fade-out');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 600);
+        });
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
@@ -1376,7 +2841,36 @@
             }
         });
 
-        // Smooth scrolling for navigation links
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scroll-progress').style.width = scrolled + '%';
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-links') && !e.target.closest('.mobile-menu-btn')) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1390,50 +2884,676 @@
             });
         });
 
-        // Mobile menu functionality
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navLinks = document.querySelector('.nav-links');
-
-        mobileMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navLinks.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                navLinks.classList.remove('active');
+        // Intersection Observer for Active Nav Link
+        const sections = document.querySelectorAll('section');
+        const navLinksList = document.querySelectorAll('.nav-links a');
+        
+        const activeNavObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinksList.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
             });
+        }, {
+            root: null,
+            threshold: 0.2,
+            rootMargin: "-25% 0px -55% 0px"
+        });
+        
+        sections.forEach(section => {
+            activeNavObserver.observe(section);
         });
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.nav-links') && !e.target.closest('.mobile-menu-btn')) {
-                navLinks.classList.remove('active');
-            }
-        });
-
-        // Animate on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+        // Intersection Observer for Scroll Reveals
+        const scrollRevealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animated');
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => {
-            observer.observe(el);
+        }, {
+            threshold: 0.05,
+            rootMargin: '0px 0px -40px 0px'
         });
 
-        // Add loading animation
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            scrollRevealObserver.observe(el);
+        });
+
+        // Numerical Stats Count-up animation
+        let statsAnimated = false;
+        const statsSection = document.querySelector('.hero-stats');
+        
+        const countUpStats = () => {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                const suffix = stat.getAttribute('data-suffix') || '';
+                let count = 0;
+                const duration = 1200; // ms
+                const increment = target / (duration / 16); // ~60fps
+                
+                const updateCount = () => {
+                    count += increment;
+                    if (count >= target) {
+                        stat.textContent = target + suffix;
+                    } else {
+                        stat.textContent = Math.floor(count) + suffix;
+                        requestAnimationFrame(updateCount);
+                    }
+                };
+                updateCount();
+            });
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !statsAnimated) {
+                    statsAnimated = true;
+                    setTimeout(countUpStats, 200);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+
+        // Typewriter subtitle animation
+        const typewriterWords = [
+            "Senior Software Developer",
+            "AI Agent Integrations Expert",
+            "Cloud & DevOps Architect"
+        ];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterElement = document.getElementById('typewriter-text');
+        
+        function type() {
+            const currentWord = typewriterWords[wordIndex];
+            if (isDeleting) {
+                typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            let typeSpeed = isDeleting ? 30 : 60;
+            
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 1500; // Pause at end of word
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % typewriterWords.length;
+                typeSpeed = 400; // Pause before typing next word
+            }
+            
+            setTimeout(type, typeSpeed);
+        }
+        
         window.addEventListener('load', () => {
-            document.body.style.opacity = '1';
+            setTimeout(type, 800);
+        });
+
+        // Spotlight mouse move tracking
+        const handleMouseMove = (e) => {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        };
+        
+        const attachSpotlight = () => {
+            const cards = document.querySelectorAll('.skill-card, .project-card, .achievement-card, .contact-card');
+            cards.forEach(card => {
+                if (!card.querySelector('.spotlight-glow')) {
+                    const glow = document.createElement('div');
+                    glow.className = 'spotlight-glow';
+                    card.appendChild(glow);
+                }
+                card.addEventListener('mousemove', handleMouseMove);
+            });
+        };
+        
+        window.addEventListener('DOMContentLoaded', attachSpotlight);
+
+        // Architecture data maps for all systems
+        const archData = {
+            // AI Agent Pipeline (Updated to Azure OpenAI + Nano Banana Orchestrator)
+            client: {
+                title: "Client Frontend Interface",
+                role: "Thread Session Trigger",
+                icon: "fa-desktop",
+                desc: "Renders the interactive chat panel, packaging prompts, base images, and chat history payloads. Initiates parallel websocket streams to trace backend processing states in real-time.",
+                tech: ["React / Next.js", "axios Client", "WebSockets"]
+            },
+            azure_openai: {
+                title: "Azure OpenAI Orchestrator",
+                role: "Central Thread Brain",
+                icon: "fa-brain",
+                desc: "Acts as the thread manager. Reads historical context messages and parses incoming requests to dynamically trigger specialized toolsets using JSON function calling rules.",
+                tech: ["Azure OpenAI API", "Function Calling", "JSON Object Mode", "Node.js"]
+            },
+            bing_search: {
+                title: "Bing Web Search Toolset",
+                role: "Information Retriever",
+                icon: "fa-search",
+                desc: "Triggered via WebSearch when queries demand external context, monument references, or architectural references not found in current conversational history.",
+                tech: ["Bing Web Search API", "JSON Payload Query"]
+            },
+            nano_banana: {
+                title: "Nano Banana Generator",
+                role: "Image Generation / Remixing",
+                icon: "fa-robot",
+                desc: "Processes image generation and reference image remixing. Custom architectural renderer toolset that supports text prompts and up to 3 URL reference images.",
+                tech: ["NanoBanana Toolset", "ComfyUI Serverless", "SDXL / Flux API"]
+            },
+            openai_vision: {
+                title: "OpenAI Vision Toolset",
+                role: "Visual Feature Analyzer",
+                icon: "fa-eye",
+                desc: "Triggered when visual context is sent by the user client. Processes base image files at low-detail resolution to extract materials, shapes, and structural data.",
+                tech: ["GPT-4o Vision API", "Base64 Image Extraction"]
+            },
+            processing_workers: {
+                title: "Design Workers & Utility Models",
+                role: "Auxiliary Pipeline Processing",
+                icon: "fa-cogs",
+                desc: "Funnels custom edits to secondary microservices: Inspire (concept gen), Render (enhancement), Upscale (Artistic / Detail / Standard), Extend (Outpainting), Atmosphere, Qwen, and DeepSeek.",
+                tech: ["DeepSeek", "Qwen", "UpscaleStandard API", "Atmosphere SDK"]
+            },
+
+            // Semantic Template Search
+            img_library: {
+                title: "Image Template Library",
+                role: "Asset Repository",
+                icon: "fa-images",
+                desc: "Houses raw design templates and architectural blueprints that require categorization and indexing for quick search retrieval.",
+                tech: ["AWS S3", "Metadata Library"]
+            },
+            banana_tagger: {
+                title: "Nano Banana Tagging Model",
+                role: "VLM Tag Generator",
+                icon: "fa-robot",
+                desc: "Processes raw images serverlessly, analyzing shapes, layouts, styles, and materials to compile rich semantic metadata tags.",
+                tech: ["NanoBanana Toolset", "VLM Inferences", "Tag Extraction"]
+            },
+            azure_embed: {
+                title: "Azure Text Embedding Model",
+                role: "Vector Embedding Encoder",
+                icon: "fa-exchange-alt",
+                desc: "Transforms generated textual tags and user queries into high-dimensional vector representations (e.g. 1536 dimensions) for semantic lookup.",
+                tech: ["Azure OpenAI Embeddings", "text-embedding-3-small"]
+            },
+            qdrant_db: {
+                title: "Qdrant Vector Database",
+                role: "Vector Store & Hybrid Engine",
+                icon: "fa-database",
+                desc: "Stores high-dimensional vectors and corresponding template payloads. Executes HNSW indexes and Cosine Similarity equations to output nearest-neighbor semantic search results.",
+                tech: ["Qdrant DB", "HNSW Indexing", "Cosine Distance", "Hybrid Search"]
+            },
+            user_search: {
+                title: "Search Query Client",
+                role: "Search Input Trigger",
+                icon: "fa-search",
+                desc: "Accepts customer natural-language queries (e.g., 'modern glass villa at sunset') and displays matched templates returned by the hybrid search engine.",
+                tech: ["React Input UI", "Dynamic Image Renders"]
+            },
+            query_embed: {
+                title: "Query Vector Converter",
+                role: "Search Query Encoder",
+                icon: "fa-key",
+                desc: "Converts incoming user queries into search vector queries using Azure OpenAI embedding APIs, matching the index database dimensions.",
+                tech: ["Azure OpenAI SDK", "text-embedding-3"]
+            },
+            
+            // AWS Fargate Stack
+            route53: {
+                title: "AWS Route 53 & CloudFront CDN",
+                role: "Traffic Routing & Edge Caching",
+                icon: "fa-cloud",
+                desc: "Manages DNS routing with latency-based policies. CloudFront caches static HTML, JS, and CSS files at edge locations globally to ensure sub-second page load times.",
+                tech: ["Route 53", "CloudFront CDN", "AWS Shield DDoS Protection", "ACM SSL"]
+            },
+            alb: {
+                title: "AWS Application Load Balancer",
+                role: "Traffic Load Balancing",
+                icon: "fa-network-wired",
+                desc: "Distributes incoming HTTP/HTTPS requests dynamically across backend microservices running in ECS. Performs automated health checks and offloads SSL termination.",
+                tech: ["ALB", "HTTP/2", "Security Groups", "Auto-Scaling"]
+            },
+            ecs: {
+                title: "AWS ECS & Fargate Cluster",
+                role: "Containerized Backend API",
+                icon: "fa-cubes",
+                desc: "Hosts containerized Node.js and .NET microservices serverlessly on Fargate. Automatically scales container task counts based on CPU/Memory thresholds inside private subnets.",
+                tech: ["Docker", "AWS ECS", "AWS Fargate", "AWS IAM", "VPC Subnets"]
+            },
+            rds: {
+                title: "Amazon RDS & DocumentDB",
+                role: "High-Availability Database Layer",
+                icon: "fa-database",
+                desc: "Managed SQL Databases (MySQL/MSSQL) and DocumentDB (MongoDB API) with automated backups, multi-AZ replication, and encrypted storage-at-rest.",
+                tech: ["Amazon RDS", "DocumentDB", "Multi-AZ Failover", "KMS Encryption"]
+            },
+            s3: {
+                title: "Amazon S3 Static Assets",
+                role: "Persistent File & Media Storage",
+                icon: "fa-folder-open",
+                desc: "Hosts user profile uploads, reports, and generated design templates. Encrypted with AWS KMS and integrated with lifecycle policies to archive old assets to Glacier.",
+                tech: ["Amazon S3", "KMS Keys", "Glacier Deep Archive", "S3 Bucket Policies"]
+            },
+
+            // API Microservices
+            client_api: {
+                title: "Client Application",
+                role: "Frontend Interface",
+                icon: "fa-desktop",
+                desc: "Web or mobile application sending API requests. Communicates via secure TLS channels with versioned endpoints.",
+                tech: ["React", "Swift", "Kotlin", "HTTPS"]
+            },
+            gateway_api: {
+                title: "API Gateway",
+                role: "Reverse Proxy & Load Balancer",
+                icon: "fa-route",
+                desc: "Acts as the single entrypoint for all clients. Handles request routing, SSL termination, client authentication, and rate limiting before forwarding to internal services.",
+                tech: ["Kong", "Envoy", "Nginx", "OAuth2 Validation"]
+            },
+            auth_service: {
+                title: "Authentication Service",
+                role: "Identity Provider",
+                icon: "fa-key",
+                desc: "Handles user login, registers accounts, issues JSON Web Tokens (JWT), and verifies session credentials.",
+                tech: ["ASP.NET Identity", "OAuth 2.0", "OIDC", "JWT"]
+            },
+            core_service: {
+                title: "Core Business Service",
+                role: "Domain Microservice",
+                icon: "fa-cogs",
+                desc: "Contains core application domain logic. Updates data records, processes client tasks, and publishes events to the message broker upon state changes.",
+                tech: ["Node.js", "Express", "PostgreSQL", "Entity Framework"]
+            },
+            broker_api: {
+                title: "Message Broker",
+                role: "Asynchronous Message Bus",
+                icon: "fa-network-wired",
+                desc: "Decouples microservices. Buffers event messages and routes them to sub-service consumer queues for async processing.",
+                tech: ["RabbitMQ", "AMQP", "Docker"]
+            },
+            notify_service: {
+                title: "Notification Service",
+                role: "Utility Worker Service",
+                icon: "fa-envelope",
+                desc: "Consumes events from the message broker to send email newsletters, SMS text validations, or system alerts asynchronously without blocking user requests.",
+                tech: ["Node.js", "Amazon SES", "Twilio API"]
+            },
+
+            // Payment Pipeline
+            client_pay: {
+                title: "Client Frontend Checkout",
+                role: "User Payment Action",
+                icon: "fa-shopping-cart",
+                desc: "Collects customer details, initializes transaction payloads, and securely transmits intent triggers to the geographic payment gateway router.",
+                tech: ["Stripe Elements", "Checkout SDK", "REST Client", "SSL Encryption"]
+            },
+            pay_router: {
+                title: "Payment Gateway Router",
+                role: "Geo-Based Provider Selector",
+                icon: "fa-random",
+                desc: "Routes transactions dynamically based on customer currency, IP location, and card type to ensure high authorization rates and lower transaction costs.",
+                tech: ["Node.js", "Express API", "GeoIP lookup", "Routing Rules"]
+            },
+            stripe_node: {
+                title: "Stripe SDK Integration",
+                role: "US/EU Card Processor",
+                icon: "fa-credit-card",
+                desc: "Processes international card payments and dynamic checkout links in the AIRI platform, managing Strong Customer Authentication (SCA) 3D Secure verification requirements.",
+                tech: ["Stripe REST API", "SCA / 3DS", "PCI-DSS Compliance", "JWT Signature Verification"]
+            },
+            migs_node: {
+                title: "Mastercard Internet Gateway (MIGS)",
+                role: "Middle East Payments (DHA)",
+                icon: "fa-university",
+                desc: "Facilitates 2-Party and 3-Party credit card transactions. Implemented securely for regional enterprise services (e.g. Dubai Health Authority systems).",
+                tech: ["MIGS API", "Secure Hash Verification", "MD5 / SHA256 Encryption"]
+            },
+            ap_wc_node: {
+                title: "Alipay & WeChat Pay Gateways",
+                role: "APAC Digital Wallets",
+                icon: "fa-wallet",
+                desc: "Allows customers in Asia-Pacific to transact in the AIRI platform via dynamic mobile app sessions, QR code scanning, and cryptographic signature validations.",
+                tech: ["Alipay SDK", "WeChat Pay API", "HMAC-SHA256 Signatures"]
+            },
+            ccavenue_node: {
+                title: "CCAvenue Integration",
+                role: "India NetBanking & UPI Hub",
+                icon: "fa-money-bill-wave",
+                desc: "Manages transactions via Indian Net Banking, UPI links, and domestic cards, utilizing full payload request-response encryption keys.",
+                tech: ["CCAvenue Integration Kit", "AES 128-bit Encryption", "Working Secret Keys"]
+            },
+            pay_webhook: {
+                title: "Webhook Callback Handler",
+                role: "Asynchronous Session Syncer",
+                icon: "fa-sync-alt",
+                desc: "Ingests asynchronous events from providers to record final payment statuses. Validates incoming payload signatures before updating local SQL datastores.",
+                tech: ["Webhook Endpoints", "HMAC Verification", "Redis Token Cache", "AWS SNS"]
+            },
+
+            // GitHub -> Lightsail CI/CD
+            git_lightsail: {
+                title: "Git Push Commit Trigger",
+                role: "Developer Code Push",
+                icon: "fa-git-alt",
+                desc: "Developer pushes a code commit or merges a branch, triggering the webhook endpoint on GitHub Actions to kick off the pipeline build.",
+                tech: ["Git", "GitHub Repository", "Webhooks"]
+            },
+            gh_actions: {
+                title: "GitHub Actions Runner",
+                role: "Build, Test & Package",
+                icon: "fa-github",
+                desc: "Compiles the application, executes unit tests, builds the production Docker container, and logs into AWS using IAM credentials.",
+                tech: ["GitHub Actions", "Docker Build", "AWS Authentication", "Node.js / MSBuild"]
+            },
+            ecr_lightsail: {
+                title: "AWS Elastic Container Registry (ECR)",
+                role: "Docker Image Repository",
+                icon: "fa-box-open",
+                desc: "Hosts the newly built, encrypted container image. Automatically performs vulnerability scans before deploying.",
+                tech: ["AWS ECR", "Docker Registry", "Image Vulnerability Scanning"]
+            },
+            lightsail_deploy: {
+                title: "AWS Lightsail Containers Deploy",
+                role: "Serverless Container Orchestration",
+                icon: "fa-server",
+                desc: "Deploys containerized services to AWS Lightsail container service. Automatically updates container versions and manages public endpoints.",
+                tech: ["AWS Lightsail Containers", "Lightsail Service API", "Auto-deployment"]
+            },
+            email_notify: {
+                title: "SES Email Notification",
+                role: "Build & Deploy Alerts",
+                icon: "fa-envelope",
+                desc: "Sends an email alert to the development team notifying them of a successful deployment or any build errors in the runner.",
+                tech: ["Amazon SES", "SMTP", "SNS Notification"]
+            },
+
+            // GitLab -> EC2 CI/CD
+            git_ec2: {
+                title: "Git Push Commit Trigger",
+                role: "Developer Code Push",
+                icon: "fa-git-alt",
+                desc: "Developer pushes code updates to the workspace registry, initializing automated checks.",
+                tech: ["Git", "Repository SSH"]
+            },
+            gh_actions_runner: {
+                title: "GitHub Actions Runner",
+                role: "Build and Test Pipeline",
+                icon: "fa-github",
+                desc: "Validates application build, executes tests, and uploads compiled Docker images to ECR registry.",
+                tech: ["GitHub Actions", "Docker Build", "IAM Auth"]
+            },
+            ecr_ec2: {
+                title: "AWS Elastic Container Registry",
+                role: "Docker Image Hosting",
+                icon: "fa-box-open",
+                desc: "Stores verified Docker images with automated tags, feeding them to downstream deployment systems.",
+                tech: ["AWS ECR", "Docker Registry"]
+            },
+            gitlab_runner: {
+                title: "GitLab Pipeline Runner",
+                role: "Intermediary Deployment Pipeline",
+                icon: "fa-gitlab",
+                desc: "Pulls updated Docker images from ECR, runs GitLab CI environment scripts, and executes SSH deployment scripts to EC2.",
+                tech: ["GitLab CI/CD", "GitLab Runner", "SSH Deployment Actions"]
+            },
+            ec2_deploy: {
+                title: "AWS EC2 Host Deployment",
+                role: "VM Host Server",
+                icon: "fa-hdd",
+                desc: "Connects via SSH to pull ECR container images and deploy/run them on virtual EC2 host servers, reloading server processes.",
+                tech: ["AWS EC2 Instance", "Docker Engine", "Nginx Proxy", "SSH Shell Scripts"]
+            },
+
+            // ECS Fargate CI/CD
+            git: {
+                title: "Git Push Commit Trigger",
+                role: "Developer Code Push",
+                icon: "fa-git-alt",
+                desc: "Developer pushes a code commit or merges a Pull Request into the main branch, triggering automated webhook hooks in the CI/CD pipeline.",
+                tech: ["Git", "GitHub Enterprise", "GitLab", "SSH Keys"]
+            },
+            cicd_runner: {
+                title: "GitHub Actions Runner",
+                role: "Automated Build & Test Runner",
+                icon: "fa-cogs",
+                desc: "Spins up isolated virtual environments to run unit tests, compile code, execute static analyses, and verify build syntax. Prevents buggy code from merging.",
+                tech: ["GitHub Actions", "GitLab CI/CD", "Jest / NUnit", "ESLint / SonarQube"]
+            },
+            ecr: {
+                title: "AWS Elastic Container Registry",
+                role: "Docker Image Repository",
+                icon: "fa-box-open",
+                desc: "Builds a Docker container image from the approved code, tags it with a commit SHA, and pushes it to ECR. Serves as the central repository for deployment-ready containers.",
+                tech: ["Docker Build", "AWS ECR", "BuildKit", "Image Vulnerability Scanning"]
+            },
+            ecs_deploy: {
+                title: "ECS Rolling Deployment",
+                role: "Zero-Downtime Server Update",
+                icon: "fa-cloud-upload-alt",
+                desc: "Instructs ECS to execute a rolling update. Spins up new tasks running the updated container, waits for load balancer health checks to pass, then drains and terminates old tasks.",
+                tech: ["ECS Task Definitions", "AWS CodeDeploy", "Blue/Green Deploy", "ALB Health Checks"]
+            },
+            slack: {
+                title: "Slack Webhook Notifications",
+                role: "Real-time Ops Alerts",
+                icon: "fa-slack",
+                desc: "Pushes real-time build and deployment notifications to engineering Slack channels. Alerts the team on build failures or successful production releases with commit diff summaries.",
+                tech: ["Slack API", "Incoming Webhooks", "ChatOps Integration"]
+            },
+
+            // Auth & Rate Limiting
+            client_request: {
+                title: "Client HTTP Request",
+                role: "User Session Trigger",
+                icon: "fa-user-shield",
+                desc: "Client initiates an API query containing request parameters, client IP address metadata, and API versioning headers.",
+                tech: ["HTTP/2", "Web Browser", "REST Client"]
+            },
+            cloudflare_rate: {
+                title: "Cloudflare WAF & Token Authentication",
+                role: "Edge Security & Rate Limiting",
+                icon: "fa-shield-alt",
+                desc: "Inspects incoming client IP address for rate limit validation (e.g. max 60 req/min) and validates access tokens (JWT/API tokens) directly at the Cloudflare edge to reject unauthorized requests before they hit the origin server.",
+                tech: ["Cloudflare WAF", "Cloudflare Workers", "Token Validation", "Rate Limiting"]
+            },
+            api_gateway: {
+                title: "Version-Based Router",
+                role: "API Gateway Manager",
+                icon: "fa-route",
+                desc: "Inspects API version headers (e.g., Accept: application/vnd.app.v2+json) to route requests dynamically to corresponding versioned backend API clusters.",
+                tech: ["Kong Gateway", "AWS API Gateway", "URL Path Routing"]
+            },
+            jwt_generator: {
+                title: "JWT Auth Microservice",
+                role: "Token Generator & Signer",
+                icon: "fa-key",
+                desc: "Authenticates client credentials. Generates a signed, cryptographically secure JSON Web Token (JWT) specifying access scopes, user ID, API version permissions, and token expiry metadata.",
+                tech: ["ASP.NET Identity", "HMAC SHA256", "OAuth 2.0", "OpenID Connect"]
+            },
+            token_cache: {
+                title: "Redis Token Cache",
+                role: "Sub-Millisecond Verification",
+                icon: "fa-database",
+                desc: "Stores blacklisted token IDs and valid session signatures in cache. Avoids heavy DB queries during consecutive requests by verifying tokens locally at speed.",
+                tech: ["Redis Session Store", "In-Memory Cache", "TTL Expiry"]
+            },
+
+            // Jenkins Deploy
+            git_jenkins: {
+                title: "Git Push Commit",
+                role: "Webhook Trigger",
+                icon: "fa-git-alt",
+                desc: "Developer pushes a code commit, triggering a Jenkins webhook event to initialize the automated pipeline.",
+                tech: ["Git", "Git Webhooks", "SSH Keys"]
+            },
+            jenkins_server: {
+                title: "Jenkins Build Pipeline",
+                role: "CI Orchestrator",
+                icon: "fa-server",
+                desc: "Checks out code branch, runs configuration triggers, compiles assets, and coordinates container creation.",
+                tech: ["Jenkins CI/CD", "Declarative Pipeline", "Jenkinsfile"]
+            },
+            docker_compiler: {
+                title: "Docker Image Compiler",
+                role: "Container Packager",
+                icon: "fa-docker",
+                desc: "Builds a production-ready Docker container, packages files, and tags the container locally or pushes it to a private container host.",
+                tech: ["Docker Compiler", "Multi-stage Dockerfile", "Image Tags"]
+            },
+            ssh_agent: {
+                title: "SSH Target Host Agent",
+                role: "Secure Connection Agent",
+                icon: "fa-key",
+                desc: "Establishes a secure SSH tunnel to the target production server, transferring build artifacts and deployment shell execution scripts.",
+                tech: ["OpenSSH Client", "Secure Copy (SCP)", "SSH Key Credentials"]
+            },
+            docker_deploy: {
+                title: "Remote Docker Deployer",
+                role: "Production Container host",
+                icon: "fa-cubes",
+                desc: "Runs the SSH terminal command scripts to stop old containers, load new Docker packages, and run the container on the target environment.",
+                tech: ["Docker Engine Host", "Container Run Command", "Ports Mapping"]
+            },
+            jenkins_slack: {
+                title: "Slack Status Logger",
+                role: "ChatOps Notifications",
+                icon: "fa-slack",
+                desc: "Pushes real-time build and deployment logs directly to the development Slack channel or emails notifications on success or failure outcomes.",
+                tech: ["Slack Incoming Webhook", "SMTP Alert Plugin"]
+            }
+        };
+
+        const attachArchEvents = () => {
+            const cards = document.querySelectorAll('.arch-card');
+            const detailIcon = document.getElementById('detail-icon');
+            const detailTitle = document.getElementById('detail-title');
+            const detailRole = document.getElementById('detail-role');
+            const detailDesc = document.getElementById('detail-desc');
+            const detailTech = document.getElementById('detail-tech');
+
+            cards.forEach(card => {
+                const nodeKey = card.getAttribute('data-node');
+                
+                const updatePanel = () => {
+                    const data = archData[nodeKey];
+                    if (!data) return;
+
+                    const activeSvg = card.closest('.arch-svg');
+                    activeSvg.querySelectorAll('.arch-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+
+                    detailIcon.className = `fas ${data.icon}`;
+                    detailTitle.textContent = data.title;
+                    detailRole.textContent = data.role;
+                    detailDesc.textContent = data.desc;
+
+                    detailTech.innerHTML = '';
+                    data.tech.forEach(t => {
+                        const span = document.createElement('span');
+                        span.className = 'tech-tag';
+                        span.textContent = t;
+                        detailTech.appendChild(span);
+                    });
+                };
+
+                card.addEventListener('mouseenter', updatePanel);
+                card.addEventListener('click', updatePanel);
+            });
+        };
+
+        // Tab switching logic
+        const attachTabEvents = () => {
+            const catBtns = document.querySelectorAll('.arch-cat-btn');
+            const groups = document.querySelectorAll('.arch-tabs-group');
+            const tabBtns = document.querySelectorAll('.arch-tab-btn');
+            const svgs = document.querySelectorAll('.arch-svg');
+            
+            const defaultNodes = {
+                ai: 'client',
+                lookup: 'img_library',
+                aws: 'route53',
+                microservices: 'client_api',
+                payment: 'client_pay',
+                lightsail: 'git_lightsail',
+                ec2: 'git_ec2',
+                cicd: 'git',
+                auth: 'client_request',
+                jenkins: 'git_jenkins'
+            };
+
+            // Category buttons click
+            catBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetCat = btn.getAttribute('data-category');
+                    
+                    catBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    groups.forEach(g => {
+                        g.style.display = 'none';
+                        if (g.id === `group-${targetCat}`) {
+                            g.style.display = 'flex';
+                        }
+                    });
+
+                    // Auto click the first visible tab inside the selected group
+                    const activeGroup = document.getElementById(`group-${targetCat}`);
+                    const firstTab = activeGroup.querySelector('.arch-tab-btn');
+                    if (firstTab) {
+                        firstTab.click();
+                    }
+                });
+            });
+
+            // Architecture tab buttons click
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetArch = btn.getAttribute('data-arch');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    svgs.forEach(svg => {
+                        svg.classList.remove('active');
+                        if (svg.id === `svg-${targetArch}`) {
+                            svg.classList.add('active');
+                        }
+                    });
+                    
+                    const defaultNode = defaultNodes[targetArch];
+                    const defaultCard = document.querySelector(`#svg-${targetArch} .arch-card[data-node="${defaultNode}"]`);
+                    if (defaultCard) {
+                        defaultCard.click();
+                    }
+                });
+            });
+        };
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            attachArchEvents();
+            attachTabEvents();
         });
     </script>
 </body>
