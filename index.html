@@ -895,7 +895,7 @@
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
             gap: 3rem;
-            align-items: center;
+            align-items: start;
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -965,6 +965,9 @@
             background: rgba(6, 182, 212, 0.08);
             border-color: var(--primary);
             box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+        }
+        foreignObject {
+            overflow: visible;
         }
         .arch-diagram-wrapper {
             position: relative;
@@ -1037,6 +1040,7 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            min-height: 280px;
         }
         .arch-details-header {
             display: flex;
@@ -1456,6 +1460,9 @@
             .arch-svg {
                 min-width: 600px;
                 height: 360px;
+            }
+            .arch-details-card {
+                min-height: auto;
             }
             .navbar {
                 top: 1rem;
